@@ -1,0 +1,22 @@
+name: Deploy to Development
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-development:
+    name: Deploy development
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build & tag docker image
+        uses: AplinkosMinisterija/reusable-workflows/.github/actions/docker-build-tag-push@main
+        with:
+          environment: development
+          push: true
