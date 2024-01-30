@@ -1,12 +1,14 @@
-name: Deploy to Development
+name: Deploy to Production
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  deploy-development:
-    name: Deploy development
-    environment: development
+  deploy-production:
+    name: Deploy production
+    environment: production
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -19,5 +21,5 @@ jobs:
       - name: Build & tag docker image
         uses: AplinkosMinisterija/reusable-workflows/.github/actions/docker-build-tag-push@main
         with:
-          environment: development
+          environment: production
           push: true
