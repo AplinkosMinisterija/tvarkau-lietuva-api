@@ -14,16 +14,16 @@ export class ReportRepository {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async getVisibleReports(): Promise<Report[]> {
+  async getVisibleReports(type: string): Promise<Report[]> {
     return await this.reportModel
-      .find({ isVisible: true, isDeleted: false })
+      .find({ isVisible: true, isDeleted: false, type: type })
       .sort({ reportDate: -1 })
       .exec();
   }
 
-  async getAllReports(): Promise<Report[]> {
+  async getAllReports(type: string): Promise<Report[]> {
     return await this.reportModel
-      .find({ isDeleted: false })
+      .find({ isDeleted: false, type: type })
       .sort({ reportDate: -1 })
       .exec();
   }
@@ -39,13 +39,14 @@ export class ReportRepository {
     return await this.reportModel.findOne({ refId: refId }).exec();
   }
 
-  async getVisibleStatusCounts(): Promise<any[]> {
+  async getVisibleStatusCounts(type: string): Promise<any[]> {
     return await this.reportModel
       .aggregate([
         {
           $match: {
             isDeleted: false,
             isVisible: true,
+            type: type,
           },
         },
         {
@@ -72,7 +73,7 @@ export class ReportRepository {
     const reportCount = reports.length;
     const newReport = new this.reportModel({
       name: createReport.name,
-      type: 'trash',
+      type: createReport.type,
       refId: reportCount + 1,
       comment: ' ',
       reportLong: createReport.longitude,

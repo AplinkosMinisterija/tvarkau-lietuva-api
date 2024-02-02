@@ -47,10 +47,11 @@ export class AdminController {
   @Get('/reports')
   async getAllReports(
     @Query('isDeleted', ParseBoolPipe) isDeleted: boolean,
+    @Query('type') type: string,
   ): Promise<FullReportDto[]> {
     return isDeleted
       ? await this.adminService.getAllDeletedReports()
-      : await this.adminService.getAllReports();
+      : await this.adminService.getAllReports(type);
   }
 
   @ApiOkResponse({

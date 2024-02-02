@@ -11,6 +11,9 @@ export class CreateReportDto {
   @IsLatitude()
   latitude: number;
 
+  @IsNotEmpty()
+  type: string;
+
   @IsEmail()
   email: string;
 

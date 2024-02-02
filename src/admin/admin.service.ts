@@ -22,8 +22,8 @@ export class AdminService {
     private readonly reportRepository: ReportRepository,
   ) {}
 
-  async getAllReports(): Promise<FullReportDto[]> {
-    const reports = await this.reportRepository.getAllReports();
+  async getAllReports(type: string): Promise<FullReportDto[]> {
+    const reports = await this.reportRepository.getAllReports(type);
     return reports.map(AdminService.docToFullReport);
   }
 

@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -46,8 +47,8 @@ export class ReportController {
     type: [PublicReportDto],
   })
   @Get()
-  getAllPublicReports(): Promise<PublicReportDto[]> {
-    return this.reportService.getAllVisibleReports();
+  getAllPublicReports(@Query('type') type: string): Promise<PublicReportDto[]> {
+    return this.reportService.getAllVisibleReports(type);
   }
 
   @ApiOkResponse({
@@ -55,8 +56,10 @@ export class ReportController {
     type: ReportStatisticsDto,
   })
   @Get('/statistics')
-  getReportStatistics(): Promise<ReportStatisticsDto> {
-    return this.reportService.getReportStatistics();
+  getReportStatistics(
+    @Query('type') type: string,
+  ): Promise<ReportStatisticsDto> {
+    return this.reportService.getReportStatistics(type);
   }
 
   @Get('/:refId')

@@ -8,8 +8,8 @@ import { ReportStatisticsDto } from './dto/report-statistics.dto';
 export class ReportService {
   constructor(private readonly reportRepository: ReportRepository) {}
 
-  async getAllVisibleReports(): Promise<PublicReportDto[]> {
-    const reports = await this.reportRepository.getVisibleReports();
+  async getAllVisibleReports(type: string): Promise<PublicReportDto[]> {
+    const reports = await this.reportRepository.getVisibleReports(type);
     return reports.map(ReportService.docToPublicReport);
   }
 
@@ -30,8 +30,8 @@ export class ReportService {
     return ReportService.docToPublicReport(report);
   }
 
-  async getReportStatistics(): Promise<ReportStatisticsDto> {
-    const stats = await this.reportRepository.getVisibleStatusCounts();
+  async getReportStatistics(type: string): Promise<ReportStatisticsDto> {
+    const stats = await this.reportRepository.getVisibleStatusCounts(type);
     return ReportService.docToReportStatistics(stats);
   }
 
