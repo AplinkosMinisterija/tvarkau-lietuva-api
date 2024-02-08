@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import { Category } from '../../common/constants/enums';
+import { IsEmail, IsEnum, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
+import { ReportCategory } from '../../common/constants/enums';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -12,8 +12,8 @@ export class CreateReportDto {
   @IsLatitude()
   latitude: number;
 
-  @IsNotEmpty()
-  category: Category;
+  @IsEnum(ReportCategory)
+  category: ReportCategory;
 
   @IsEmail()
   email: string;

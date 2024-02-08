@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StatusRecordsDto } from './status-records.dto';
-import { Category } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/constants/enums';
 
 export class PublicReportDto {
   @ApiProperty()
   name: string;
 
   @ApiProperty()
-  category: Category;
+  category: ReportCategory;
 
   @ApiProperty()
   refId: string;
@@ -38,7 +38,7 @@ export class PublicReportDto {
 
   constructor(
     name: string,
-    category: Category,
+    category: ReportCategory,
     refId: string,
     longitude: number,
     latitude: number,

@@ -3,14 +3,14 @@ import { CreateReportDto, PublicReportDto, StatusRecordsDto } from './dto';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { Report, StatusRecords } from '../repositories/reports/schemas';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
-import { Category } from '../common/constants/enums';
+import { ReportCategory } from '../common/constants/enums';
 
 @Injectable()
 export class ReportService {
   constructor(private readonly reportRepository: ReportRepository) {}
 
   async getAllVisibleReports(
-    category: Category | undefined,
+    category?: ReportCategory,
   ): Promise<PublicReportDto[]> {
     const reports = await this.reportRepository.getVisibleReports(category);
     return reports.map(ReportService.docToPublicReport);
@@ -33,7 +33,9 @@ export class ReportService {
     return ReportService.docToPublicReport(report);
   }
 
-  async getReportStatistics(category?: Category): Promise<ReportStatisticsDto> {
+  async getReportStatistics(
+    category?: ReportCategory,
+  ): Promise<ReportStatisticsDto> {
     const stats = await this.reportRepository.getVisibleStatusCounts(category);
     return ReportService.docToReportStatistics(stats);
   }
@@ -53,7 +55,7 @@ export class ReportService {
   private static docToPublicReport(e: Report): PublicReportDto {
     return new PublicReportDto(
       e.name,
-      e.type as Category,
+      e.type as ReportCategory,
       e.refId,
       e.reportLong,
       e.reportLat,

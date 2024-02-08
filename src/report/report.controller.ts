@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
   Query,
@@ -23,7 +24,7 @@ import { PublicReportDto } from './dto';
 import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
-import { Category } from '../common/constants/enums';
+import { ReportCategory } from '../common/constants/enums';
 
 @Controller('reports')
 @ApiTags('reports')
@@ -48,11 +49,11 @@ export class ReportController {
     description: 'All visible reports have been successfully found',
     type: [PublicReportDto],
   })
-  @ApiQuery({ name: 'category', enum: Category, required: false })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
   @Get()
   getAllPublicReports(
-    @Query('category')
-    category?: Category | undefined,
+    @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory,
   ): Promise<PublicReportDto[]> {
     return this.reportService.getAllVisibleReports(category);
   }
@@ -61,10 +62,11 @@ export class ReportController {
     description: 'Report statistics have been successfully fetched',
     type: ReportStatisticsDto,
   })
-  @ApiQuery({ name: 'category', enum: Category, required: false })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
   @Get('/statistics')
   getReportStatistics(
-    @Query('category') category?: Category,
+    @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory,
   ): Promise<ReportStatisticsDto> {
     return this.reportService.getReportStatistics(category);
   }

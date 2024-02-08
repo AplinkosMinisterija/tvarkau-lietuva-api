@@ -1,4 +1,4 @@
-export enum Category {
+export enum ReportCategory {
   trash = 'trash',
   forest = 'forest',
 }

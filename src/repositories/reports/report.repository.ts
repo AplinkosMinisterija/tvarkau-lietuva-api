@@ -7,7 +7,7 @@ import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { BadRequestException } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
-import { Category } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/constants/enums';
 
 export class ReportRepository {
   constructor(
@@ -15,7 +15,7 @@ export class ReportRepository {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async getVisibleReports(category: Category | undefined): Promise<Report[]> {
+  async getVisibleReports(category?: ReportCategory): Promise<Report[]> {
     return category === undefined
       ? await this.reportModel
           .find({ isVisible: true, isDeleted: false })
@@ -27,7 +27,7 @@ export class ReportRepository {
           .exec();
   }
 
-  async getAllReports(category: Category): Promise<Report[]> {
+  async getAllReports(category?: ReportCategory): Promise<Report[]> {
     return category === undefined
       ? await this.reportModel
           .find({ isDeleted: false })
@@ -39,7 +39,7 @@ export class ReportRepository {
           .exec();
   }
 
-  async getDeletedReports(category?: Category): Promise<Report[]> {
+  async getDeletedReports(category?: ReportCategory): Promise<Report[]> {
     return category === undefined
       ? await this.reportModel
           .find({ isDeleted: true })
@@ -55,7 +55,7 @@ export class ReportRepository {
     return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
   }
 
-  async getVisibleStatusCounts(category?: Category): Promise<any[]> {
+  async getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {
     return category === undefined
       ? await this.reportModel
           .aggregate([

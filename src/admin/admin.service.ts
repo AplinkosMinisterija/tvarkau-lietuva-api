@@ -14,7 +14,7 @@ import { HistoryEditsDto } from './dto/history-edits.dto';
 import { StatusRecordsDto } from '../report/dto';
 import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
-import { Category } from '../common/constants/enums';
+import { ReportCategory } from '../common/constants/enums';
 
 @Injectable()
 export class AdminService {
@@ -23,7 +23,7 @@ export class AdminService {
     private readonly reportRepository: ReportRepository,
   ) {}
 
-  async getAllReports(category: Category): Promise<FullReportDto[]> {
+  async getAllReports(category?: ReportCategory): Promise<FullReportDto[]> {
     const reports = await this.reportRepository.getAllReports(category);
     return reports.map(AdminService.docToFullReport);
   }
@@ -40,7 +40,9 @@ export class AdminService {
     return AdminService.docToFullDump(dump);
   }
 
-  async getAllDeletedReports(category?: Category): Promise<FullReportDto[]> {
+  async getAllDeletedReports(
+    category?: ReportCategory,
+  ): Promise<FullReportDto[]> {
     const reports = await this.reportRepository.getDeletedReports(category);
     return reports.map(AdminService.docToFullReport);
   }
@@ -94,7 +96,7 @@ export class AdminService {
     return new FullReportDto(
       report.refId,
       report.name,
-      report.type as Category,
+      report.type as ReportCategory,
       report.refId,
       report.reportLong,
       report.reportLat,

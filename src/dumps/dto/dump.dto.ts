@@ -1,14 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum } from 'class-validator';
-import { Category } from '../../common/constants/enums';
 
 export class DumpDto {
   @ApiProperty()
   name: string;
-
-  @ApiProperty()
-  @IsEnum(Category)
-  category: string;
 
   @ApiProperty({ format: 'double' })
   reportLong: number;
@@ -39,7 +33,6 @@ export class DumpDto {
     moreInformation: string,
   ) {
     this.name = name;
-    this.category = category;
     this.reportLong = reportLong;
     this.reportLat = reportLat;
     this.address = address;
