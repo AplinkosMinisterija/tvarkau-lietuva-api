@@ -14,7 +14,7 @@ import { HistoryEditsDto } from './dto/history-edits.dto';
 import { StatusRecordsDto } from '../report/dto';
 import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
-import { ReportCategory } from '../common/constants/enums';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Injectable()
 export class AdminService {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StatusRecordsDto } from './status-records.dto';
-import { ReportCategory } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class PublicReportDto {
   @ApiProperty()

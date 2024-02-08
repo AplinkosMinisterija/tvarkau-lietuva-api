@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { HistoryDataDto } from './history-data.dto';
 import { StatusRecordsDto } from './status-records.dto';
 import { ToBoolean } from '../../common/transform/boolean.transform';
-import { ReportCategory } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class FullReportDto {
   @ApiProperty()

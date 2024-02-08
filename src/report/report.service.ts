@@ -3,7 +3,7 @@ import { CreateReportDto, PublicReportDto, StatusRecordsDto } from './dto';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { Report, StatusRecords } from '../repositories/reports/schemas';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
-import { ReportCategory } from '../common/constants/enums';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Injectable()
 export class ReportService {

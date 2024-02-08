@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
-import { ReportCategory } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class CreateReportDto {
   @IsNotEmpty()

@@ -24,7 +24,7 @@ import { PublicReportDto } from './dto';
 import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
-import { ReportCategory } from '../common/constants/enums';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Controller('reports')
 @ApiTags('reports')

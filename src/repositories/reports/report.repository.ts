@@ -7,7 +7,7 @@ import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { BadRequestException } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
-import { ReportCategory } from '../../common/constants/enums';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class ReportRepository {
   constructor(

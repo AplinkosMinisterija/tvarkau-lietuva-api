@@ -34,7 +34,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
-import { ReportCategory } from '../common/constants/enums';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Controller('admin')
 @ApiTags('admin')
