@@ -24,7 +24,6 @@ export class DumpDto {
 
   constructor(
     name: string,
-    category: string,
     reportLong: number,
     reportLat: number,
     address: string,

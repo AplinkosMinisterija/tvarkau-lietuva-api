@@ -80,7 +80,6 @@ export class AdminService {
     return new FullDumpDto(
       dump._id.toString(),
       dump.name,
-      dump.type,
       dump.reportLong,
       dump.reportLat,
       dump.isVisible,

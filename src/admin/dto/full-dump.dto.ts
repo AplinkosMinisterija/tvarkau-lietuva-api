@@ -8,9 +8,6 @@ export class FullDumpDto {
   @ApiProperty()
   name: string;
 
-  @ApiProperty()
-  category: string;
-
   @ApiProperty({ format: 'double' })
   longitude: number;
 
@@ -36,7 +33,6 @@ export class FullDumpDto {
   constructor(
     refId: string,
     name: string,
-    category: string,
     longitude: number,
     latitude: number,
     isVisible: boolean,
@@ -47,7 +43,6 @@ export class FullDumpDto {
   ) {
     this.refId = refId;
     this.name = name;
-    this.category = category;
     this.longitude = longitude;
     this.latitude = latitude;
     this.isVisible = isVisible;
