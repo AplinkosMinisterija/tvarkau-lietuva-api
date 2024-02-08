@@ -7,6 +7,7 @@ import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { BadRequestException } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
+import { Category } from '../../common/constants/enums';
 
 export class ReportRepository {
   constructor(
@@ -14,51 +15,85 @@ export class ReportRepository {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async getVisibleReports(type: string): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isVisible: true, isDeleted: false, type: type })
-      .sort({ reportDate: -1 })
-      .exec();
+  async getVisibleReports(category: Category | undefined): Promise<Report[]> {
+    return category === undefined
+      ? await this.reportModel
+          .find({ isVisible: true, isDeleted: false })
+          .sort({ reportDate: -1 })
+          .exec()
+      : await this.reportModel
+          .find({ isVisible: true, isDeleted: false, type: { $eq: category } })
+          .sort({ reportDate: -1 })
+          .exec();
   }
 
-  async getAllReports(type: string): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isDeleted: false, type: type })
-      .sort({ reportDate: -1 })
-      .exec();
+  async getAllReports(category: Category): Promise<Report[]> {
+    return category === undefined
+      ? await this.reportModel
+          .find({ isDeleted: false })
+          .sort({ reportDate: -1 })
+          .exec()
+      : await this.reportModel
+          .find({ isDeleted: false, type: { $eq: category } })
+          .sort({ reportDate: -1 })
+          .exec();
   }
 
-  async getDeletedReports(): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isDeleted: true })
-      .sort({ reportDate: -1 })
-      .exec();
+  async getDeletedReports(category?: Category): Promise<Report[]> {
+    return category === undefined
+      ? await this.reportModel
+          .find({ isDeleted: true })
+          .sort({ reportDate: -1 })
+          .exec()
+      : await this.reportModel
+          .find({ isDeleted: true, type: { $eq: category } })
+          .sort({ reportDate: -1 })
+          .exec();
   }
 
   async getReportById(refId: number): Promise<Report | null> {
-    return await this.reportModel.findOne({ refId: refId }).exec();
+    return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
   }
 
-  async getVisibleStatusCounts(type: string): Promise<any[]> {
-    return await this.reportModel
-      .aggregate([
-        {
-          $match: {
-            isDeleted: false,
-            isVisible: true,
-            type: type,
-          },
-        },
-        {
-          $group: {
-            _id: '$status',
-            count: {
-              $sum: 1,
+  async getVisibleStatusCounts(category?: Category): Promise<any[]> {
+    return category === undefined
+      ? await this.reportModel
+          .aggregate([
+            {
+              $match: {
+                isDeleted: false,
+                isVisible: true,
+                type: { $eq: category },
+              },
             },
-          },
-        },
-      ])
-      .exec();
+            {
+              $group: {
+                _id: '$status',
+                count: {
+                  $sum: 1,
+                },
+              },
+            },
+          ])
+          .exec()
+      : await this.reportModel
+          .aggregate([
+            {
+              $match: {
+                isDeleted: false,
+                isVisible: true,
+              },
+            },
+            {
+              $group: {
+                _id: '$status',
+                count: {
+                  $sum: 1,
+                },
+              },
+            },
+          ])
+          .exec();
   }
 
   async createReport(
@@ -73,7 +108,7 @@ export class ReportRepository {
     const reportCount = reports.length;
     const newReport = new this.reportModel({
       name: createReport.name,
-      type: createReport.type,
+      type: createReport.category,
       refId: reportCount + 1,
       comment: ' ',
       reportLong: createReport.longitude,
@@ -119,7 +154,7 @@ export class ReportRepository {
     }
 
     const report = await this.reportModel
-      .findOne({ refId: updateReport.refId })
+      .findOne({ refId: { $eq: updateReport.refId } })
       .exec();
 
     if (report != null) {
@@ -213,7 +248,7 @@ export class ReportRepository {
       updatedReport = await this.reportModel
         .findOneAndUpdate(
           {
-            refId: updateReport.refId,
+            refId: { eq: updateReport.refId },
           },
           {
             $set: {

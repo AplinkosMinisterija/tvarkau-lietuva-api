@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { HistoryDataDto } from './history-data.dto';
 import { StatusRecordsDto } from './status-records.dto';
 import { ToBoolean } from '../../common/transform/boolean.transform';
+import { Category } from '../../common/constants/enums';
 
 export class FullReportDto {
   @ApiProperty()
@@ -11,7 +12,7 @@ export class FullReportDto {
   name: string;
 
   @ApiProperty()
-  type: string;
+  category: Category;
 
   @ApiProperty()
   refId: string;
@@ -57,7 +58,7 @@ export class FullReportDto {
   constructor(
     _id: string,
     name: string,
-    type: string,
+    category: Category,
     refId: string,
     longitude: number,
     latitude: number,
@@ -74,7 +75,7 @@ export class FullReportDto {
   ) {
     this._id = _id;
     this.name = name;
-    this.type = type;
+    this.category = category;
     this.refId = refId;
     this.longitude = longitude;
     this.latitude = latitude;

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
+import { Category } from '../../common/constants/enums';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -12,7 +13,7 @@ export class CreateReportDto {
   latitude: number;
 
   @IsNotEmpty()
-  type: string;
+  category: Category;
 
   @IsEmail()
   email: string;

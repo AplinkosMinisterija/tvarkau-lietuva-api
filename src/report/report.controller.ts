@@ -16,12 +16,14 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PublicReportDto } from './dto';
 import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
+import { Category } from '../common/constants/enums';
 
 @Controller('reports')
 @ApiTags('reports')
@@ -46,20 +48,25 @@ export class ReportController {
     description: 'All visible reports have been successfully found',
     type: [PublicReportDto],
   })
+  @ApiQuery({ name: 'category', enum: Category, required: false })
   @Get()
-  getAllPublicReports(@Query('type') type: string): Promise<PublicReportDto[]> {
-    return this.reportService.getAllVisibleReports(type);
+  getAllPublicReports(
+    @Query('category')
+    category?: Category | undefined,
+  ): Promise<PublicReportDto[]> {
+    return this.reportService.getAllVisibleReports(category);
   }
 
   @ApiOkResponse({
     description: 'Report statistics have been successfully fetched',
     type: ReportStatisticsDto,
   })
+  @ApiQuery({ name: 'category', enum: Category, required: false })
   @Get('/statistics')
   getReportStatistics(
-    @Query('type') type: string,
+    @Query('category') category?: Category,
   ): Promise<ReportStatisticsDto> {
-    return this.reportService.getReportStatistics(type);
+    return this.reportService.getReportStatistics(category);
   }
 
   @Get('/:refId')
