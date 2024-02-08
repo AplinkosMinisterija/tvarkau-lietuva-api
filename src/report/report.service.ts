@@ -55,7 +55,7 @@ export class ReportService {
   private static docToPublicReport(e: Report): PublicReportDto {
     return new PublicReportDto(
       e.name,
-      e.type as ReportCategory,
+      ReportService.parseReportCategory(e.type),
       e.refId,
       e.reportLong,
       e.reportLat,
@@ -72,5 +72,13 @@ export class ReportService {
     e: StatusRecords,
   ): StatusRecordsDto {
     return new StatusRecordsDto(e.status, new Date(e.date));
+  }
+
+  private static parseReportCategory(value: string): ReportCategory {
+    if (Object.values(ReportCategory).includes(value as ReportCategory)) {
+      return value as ReportCategory;
+    } else {
+      throw new Error(`Invalid report category: ${value}`);
+    }
   }
 }

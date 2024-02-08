@@ -96,7 +96,7 @@ export class AdminService {
     return new FullReportDto(
       report.refId,
       report.name,
-      report.type as ReportCategory,
+      AdminService.parseReportCategory(report.type),
       report.refId,
       report.reportLong,
       report.reportLat,
@@ -129,5 +129,13 @@ export class AdminService {
 
   private static docToStatusRecords(records: StatusRecords): StatusRecordsDto {
     return new StatusRecordsDto(records.status, new Date(records.date));
+  }
+
+  private static parseReportCategory(value: string): ReportCategory {
+    if (Object.values(ReportCategory).includes(value as ReportCategory)) {
+      return value as ReportCategory;
+    } else {
+      throw new Error(`Invalid report category: ${value}`);
+    }
   }
 }
