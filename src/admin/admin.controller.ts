@@ -54,9 +54,7 @@ export class AdminController {
     @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
     category?: ReportCategory,
   ): Promise<FullReportDto[]> {
-    return isDeleted
-      ? await this.adminService.getAllDeletedReports(category)
-      : await this.adminService.getAllReports(category);
+    return this.adminService.getAllReports(isDeleted, category);
   }
 
   @ApiOkResponse({

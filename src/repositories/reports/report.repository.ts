@@ -15,85 +15,58 @@ export class ReportRepository {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async getVisibleReports(category?: ReportCategory): Promise<Report[]> {
-    return category === undefined
-      ? await this.reportModel
-          .find({ isVisible: true, isDeleted: false })
-          .sort({ reportDate: -1 })
-          .exec()
-      : await this.reportModel
-          .find({ isVisible: true, isDeleted: false, type: { $eq: category } })
-          .sort({ reportDate: -1 })
-          .exec();
+  getVisibleReports(category?: ReportCategory): Promise<Report[]> {
+    const query: any = { isVisible: true, isDeleted: false };
+
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
-  async getAllReports(category?: ReportCategory): Promise<Report[]> {
-    return category === undefined
-      ? await this.reportModel
-          .find({ isDeleted: false })
-          .sort({ reportDate: -1 })
-          .exec()
-      : await this.reportModel
-          .find({ isDeleted: false, type: { $eq: category } })
-          .sort({ reportDate: -1 })
-          .exec();
-  }
+  getAllReports(
+    isDeleted: boolean,
+    category?: ReportCategory,
+  ): Promise<Report[]> {
+    const query: any = { isDeleted: isDeleted };
 
-  async getDeletedReports(category?: ReportCategory): Promise<Report[]> {
-    return category === undefined
-      ? await this.reportModel
-          .find({ isDeleted: true })
-          .sort({ reportDate: -1 })
-          .exec()
-      : await this.reportModel
-          .find({ isDeleted: true, type: { $eq: category } })
-          .sort({ reportDate: -1 })
-          .exec();
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
   async getReportById(refId: number): Promise<Report | null> {
     return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
   }
 
-  async getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {
-    return category === undefined
-      ? await this.reportModel
-          .aggregate([
-            {
-              $match: {
-                isDeleted: false,
-                isVisible: true,
-                type: { $eq: category },
-              },
+  getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {
+    const query: any = {
+      isDeleted: false,
+      isVisible: true,
+    };
+
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel
+      .aggregate([
+        {
+          $match: query,
+        },
+        {
+          $group: {
+            _id: '$status',
+            count: {
+              $sum: 1,
             },
-            {
-              $group: {
-                _id: '$status',
-                count: {
-                  $sum: 1,
-                },
-              },
-            },
-          ])
-          .exec()
-      : await this.reportModel
-          .aggregate([
-            {
-              $match: {
-                isDeleted: false,
-                isVisible: true,
-              },
-            },
-            {
-              $group: {
-                _id: '$status',
-                count: {
-                  $sum: 1,
-                },
-              },
-            },
-          ])
-          .exec();
+          },
+        },
+      ])
+      .exec();
   }
 
   async createReport(

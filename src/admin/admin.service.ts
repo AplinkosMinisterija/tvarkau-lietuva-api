@@ -23,8 +23,14 @@ export class AdminService {
     private readonly reportRepository: ReportRepository,
   ) {}
 
-  async getAllReports(category?: ReportCategory): Promise<FullReportDto[]> {
-    const reports = await this.reportRepository.getAllReports(category);
+  async getAllReports(
+    isDeleted: boolean,
+    category?: ReportCategory,
+  ): Promise<FullReportDto[]> {
+    const reports = await this.reportRepository.getAllReports(
+      isDeleted,
+      category,
+    );
     return reports.map(AdminService.docToFullReport);
   }
 
@@ -38,13 +44,6 @@ export class AdminService {
     const dump = await this.dumpRepository.getDumpById(refId);
     if (!dump) return null;
     return AdminService.docToFullDump(dump);
-  }
-
-  async getAllDeletedReports(
-    category?: ReportCategory,
-  ): Promise<FullReportDto[]> {
-    const reports = await this.reportRepository.getDeletedReports(category);
-    return reports.map(AdminService.docToFullReport);
   }
 
   async updateReport(
