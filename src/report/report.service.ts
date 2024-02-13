@@ -42,14 +42,18 @@ export class ReportService {
 
   private static docToReportStatistics(e: any): ReportStatisticsDto {
     return new ReportStatisticsDto(
-      e.filter((stat: { _id: string }) => stat._id == 'gautas')[0].count ?? 0,
-      e.filter((stat: { _id: string }) => stat._id == 'tiriamas')[0].count ?? 0,
-      e.filter((stat: { _id: string }) => stat._id == 'ištirtas')[0].count ?? 0,
-      e.filter((stat: { _id: string }) => stat._id == 'sutvarkyta')[0].count ??
-        0,
-      e.filter((stat: { _id: string }) => stat._id == 'nepasitvirtino')[0]
-        .count ?? 0,
+      ReportService.filterStatistics(e, 'gautas'),
+      ReportService.filterStatistics(e, 'tiriamas'),
+      ReportService.filterStatistics(e, 'ištirtas'),
+      ReportService.filterStatistics(e, 'sutvarkyta'),
+      ReportService.filterStatistics(e, 'nepasitvirtino'),
     );
+  }
+
+  private static filterStatistics(e: any, status: string): number {
+    return e.filter((stat: { _id: string }) => stat._id == status).length > 0
+      ? e.filter((stat: { _id: string }) => stat._id == status)[0].count ?? 0
+      : 0;
   }
 
   private static docToPublicReport(e: Report): PublicReportDto {
