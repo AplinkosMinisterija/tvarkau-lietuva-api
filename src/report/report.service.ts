@@ -44,8 +44,7 @@ export class ReportService {
     return new ReportStatisticsDto(
       ReportService.filterStatistics(e, 'gautas'),
       ReportService.filterStatistics(e, 'tiriamas'),
-      ReportService.filterStatistics(e, 'ištirtas'),
-      ReportService.filterStatistics(e, 'sutvarkyta'),
+      ReportService.filterStatistics(e, 'išspręsta'),
       ReportService.filterStatistics(e, 'nepasitvirtino'),
     );
   }
