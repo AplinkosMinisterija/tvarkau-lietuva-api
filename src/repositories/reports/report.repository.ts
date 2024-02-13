@@ -221,7 +221,7 @@ export class ReportRepository {
       updatedReport = await this.reportModel
         .findOneAndUpdate(
           {
-            refId: { eq: updateReport.refId },
+            refId: { $eq: updateReport.refId },
           },
           {
             $set: {

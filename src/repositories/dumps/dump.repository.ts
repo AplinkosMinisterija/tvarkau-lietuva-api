@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Dump } from './schemas';
-import { UpdateDumpDto } from '../../admin/dto/update-dump.dto';
+import { UpdateDumpDto } from '../../admin/dto';
 import { CreateDumpDto } from '../../admin/dto';
 
 export class DumpRepository {
