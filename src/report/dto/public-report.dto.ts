@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { StatusRecordsDto } from './status-records.dto';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class PublicReportDto {
   @ApiProperty()
   name: string;
 
   @ApiProperty()
-  type: string;
+  category: ReportCategory;
 
   @ApiProperty()
   refId: string;
@@ -37,7 +38,7 @@ export class PublicReportDto {
 
   constructor(
     name: string,
-    type: string,
+    category: ReportCategory,
     refId: string,
     longitude: number,
     latitude: number,
@@ -49,7 +50,7 @@ export class PublicReportDto {
     statusRecords: StatusRecordsDto[],
   ) {
     this.name = name;
-    this.type = type;
+    this.category = category;
     this.refId = refId;
     this.longitude = longitude;
     this.latitude = latitude;

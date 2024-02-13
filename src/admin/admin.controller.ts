@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   ParseBoolPipe,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -20,6 +21,7 @@ import {
   ApiConsumes,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import {
@@ -32,6 +34,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Controller('admin')
 @ApiTags('admin')
@@ -44,13 +47,14 @@ export class AdminController {
     description: 'All reports have been successfully found',
     type: [FullReportDto],
   })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
   @Get('/reports')
   async getAllReports(
     @Query('isDeleted', ParseBoolPipe) isDeleted: boolean,
+    @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory,
   ): Promise<FullReportDto[]> {
-    return isDeleted
-      ? await this.adminService.getAllDeletedReports()
-      : await this.adminService.getAllReports();
+    return this.adminService.getAllReports(isDeleted, category);
   }
 
   @ApiOkResponse({

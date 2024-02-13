@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Dump } from './schemas';
-import { UpdateDumpDto } from '../../admin/dto/update-dump.dto';
+import { UpdateDumpDto } from '../../admin/dto';
 import { CreateDumpDto } from '../../admin/dto';
 
 export class DumpRepository {
@@ -34,7 +34,7 @@ export class DumpRepository {
     return await newDump.save();
   }
   getDumpById(id: string) {
-    return this.dumpModel.findOne({ _id: id }).exec();
+    return this.dumpModel.findOne({ _id: { eq: id } }).exec();
   }
   async updateDump(updateDump: UpdateDumpDto): Promise<Dump | null> {
     const dump = await this.getDumpById(updateDump._id);

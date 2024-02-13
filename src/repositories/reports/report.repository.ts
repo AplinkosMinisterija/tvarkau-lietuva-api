@@ -7,6 +7,7 @@ import { CloudinaryService } from '../../cloudinary/cloudinary.service';
 import { BadRequestException } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class ReportRepository {
   constructor(
@@ -14,39 +15,47 @@ export class ReportRepository {
     private cloudinary: CloudinaryService,
   ) {}
 
-  async getVisibleReports(): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isVisible: true, isDeleted: false })
-      .sort({ reportDate: -1 })
-      .exec();
+  getVisibleReports(category?: ReportCategory): Promise<Report[]> {
+    const query: any = { isVisible: true, isDeleted: false };
+
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
-  async getAllReports(): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isDeleted: false })
-      .sort({ reportDate: -1 })
-      .exec();
-  }
+  getAllReports(
+    isDeleted: boolean,
+    category?: ReportCategory,
+  ): Promise<Report[]> {
+    const query: any = { isDeleted: isDeleted };
 
-  async getDeletedReports(): Promise<Report[]> {
-    return await this.reportModel
-      .find({ isDeleted: true })
-      .sort({ reportDate: -1 })
-      .exec();
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
   async getReportById(refId: number): Promise<Report | null> {
-    return await this.reportModel.findOne({ refId: refId }).exec();
+    return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
   }
 
-  async getVisibleStatusCounts(): Promise<any[]> {
-    return await this.reportModel
+  getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {
+    const query: any = {
+      isDeleted: false,
+      isVisible: true,
+    };
+
+    if (category) {
+      query.type = { $eq: category };
+    }
+
+    return this.reportModel
       .aggregate([
         {
-          $match: {
-            isDeleted: false,
-            isVisible: true,
-          },
+          $match: query,
         },
         {
           $group: {
@@ -72,7 +81,7 @@ export class ReportRepository {
     const reportCount = reports.length;
     const newReport = new this.reportModel({
       name: createReport.name,
-      type: 'trash',
+      type: createReport.category,
       refId: reportCount + 1,
       comment: ' ',
       reportLong: createReport.longitude,
@@ -118,7 +127,7 @@ export class ReportRepository {
     }
 
     const report = await this.reportModel
-      .findOne({ refId: updateReport.refId })
+      .findOne({ refId: { $eq: updateReport.refId } })
       .exec();
 
     if (report != null) {
@@ -212,7 +221,7 @@ export class ReportRepository {
       updatedReport = await this.reportModel
         .findOneAndUpdate(
           {
-            refId: updateReport.refId,
+            refId: { $eq: updateReport.refId },
           },
           {
             $set: {

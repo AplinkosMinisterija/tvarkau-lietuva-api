@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsEnum, IsLatitude, IsLongitude, IsNotEmpty } from 'class-validator';
+import { ReportCategory } from '../../common/dto/report-category';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -10,6 +11,9 @@ export class CreateReportDto {
 
   @IsLatitude()
   latitude: number;
+
+  @IsEnum(ReportCategory)
+  category: ReportCategory;
 
   @IsEmail()
   email: string;

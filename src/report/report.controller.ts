@@ -4,8 +4,10 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseEnumPipe,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,12 +17,14 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { PublicReportDto } from './dto';
 import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Controller('reports')
 @ApiTags('reports')
@@ -45,18 +49,26 @@ export class ReportController {
     description: 'All visible reports have been successfully found',
     type: [PublicReportDto],
   })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
   @Get()
-  getAllPublicReports(): Promise<PublicReportDto[]> {
-    return this.reportService.getAllVisibleReports();
+  getAllPublicReports(
+    @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory,
+  ): Promise<PublicReportDto[]> {
+    return this.reportService.getAllVisibleReports(category);
   }
 
   @ApiOkResponse({
     description: 'Report statistics have been successfully fetched',
     type: ReportStatisticsDto,
   })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
   @Get('/statistics')
-  getReportStatistics(): Promise<ReportStatisticsDto> {
-    return this.reportService.getReportStatistics();
+  getReportStatistics(
+    @Query('category', new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory,
+  ): Promise<ReportStatisticsDto> {
+    return this.reportService.getReportStatistics(category);
   }
 
   @Get('/:refId')

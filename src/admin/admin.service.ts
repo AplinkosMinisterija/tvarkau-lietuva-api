@@ -14,6 +14,7 @@ import { HistoryEditsDto } from './dto/history-edits.dto';
 import { StatusRecordsDto } from '../report/dto';
 import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
+import { ReportCategory } from '../common/dto/report-category';
 
 @Injectable()
 export class AdminService {
@@ -22,8 +23,14 @@ export class AdminService {
     private readonly reportRepository: ReportRepository,
   ) {}
 
-  async getAllReports(): Promise<FullReportDto[]> {
-    const reports = await this.reportRepository.getAllReports();
+  async getAllReports(
+    isDeleted: boolean,
+    category?: ReportCategory,
+  ): Promise<FullReportDto[]> {
+    const reports = await this.reportRepository.getAllReports(
+      isDeleted,
+      category,
+    );
     return reports.map(AdminService.docToFullReport);
   }
 
@@ -37,11 +44,6 @@ export class AdminService {
     const dump = await this.dumpRepository.getDumpById(refId);
     if (!dump) return null;
     return AdminService.docToFullDump(dump);
-  }
-
-  async getAllDeletedReports(): Promise<FullReportDto[]> {
-    const reports = await this.reportRepository.getDeletedReports();
-    return reports.map(AdminService.docToFullReport);
   }
 
   async updateReport(
@@ -78,7 +80,6 @@ export class AdminService {
     return new FullDumpDto(
       dump._id.toString(),
       dump.name,
-      dump.type,
       dump.reportLong,
       dump.reportLat,
       dump.isVisible,
@@ -93,7 +94,7 @@ export class AdminService {
     return new FullReportDto(
       report.refId,
       report.name,
-      report.type,
+      AdminService.parseReportCategory(report.type),
       report.refId,
       report.reportLong,
       report.reportLat,
@@ -126,5 +127,13 @@ export class AdminService {
 
   private static docToStatusRecords(records: StatusRecords): StatusRecordsDto {
     return new StatusRecordsDto(records.status, new Date(records.date));
+  }
+
+  private static parseReportCategory(value: string): ReportCategory {
+    if (Object.values(ReportCategory).includes(value as ReportCategory)) {
+      return value as ReportCategory;
+    } else {
+      throw new Error(`Invalid report category: ${value}`);
+    }
   }
 }

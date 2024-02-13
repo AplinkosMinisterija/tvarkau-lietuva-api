@@ -11,10 +11,10 @@ export class DumpService {
     const dumps = await this.dumpRepository.getVisibleDumps();
     return dumps.map(this.docToPublicDump);
   }
+
   private docToPublicDump(e: Dump): DumpDto {
     return new DumpDto(
       e.name,
-      e.type,
       e.reportLong,
       e.reportLat,
       e.address,

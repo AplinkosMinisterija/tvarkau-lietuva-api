@@ -4,9 +4,6 @@ export class DumpDto {
   @ApiProperty()
   name: string;
 
-  @ApiProperty()
-  type: string;
-
   @ApiProperty({ format: 'double' })
   reportLong: number;
 
@@ -27,7 +24,6 @@ export class DumpDto {
 
   constructor(
     name: string,
-    type: string,
     reportLong: number,
     reportLat: number,
     address: string,
@@ -36,7 +32,6 @@ export class DumpDto {
     moreInformation: string,
   ) {
     this.name = name;
-    this.type = type;
     this.reportLong = reportLong;
     this.reportLat = reportLat;
     this.address = address;
