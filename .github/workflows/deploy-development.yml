@@ -21,3 +21,10 @@ jobs:
         with:
           environment: development
           push: true
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-build
+          retention-days: 3
+          path: build/api
