@@ -40,5 +40,5 @@ jobs:
           repo: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_REPOSITORY }}
           github_token: ${{ steps.get_workflow_token.outputs.token }}
           workflow_file_name: ${{secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_WORKFLOW_FILE_NAME}}
-          client_payload: '{"environment": "development"}'
+          client_payload: '{"environment": "production"}'
   
