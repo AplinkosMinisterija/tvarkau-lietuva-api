@@ -23,3 +23,12 @@ jobs:
         with:
           environment: production
           push: true
+
+      - name: Trigger deploy
+        uses: AplinkosMinisterija/reusable-workflows/.github/actions/trigger-workflow-and-wait@main
+        with:
+          application-id: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_APPLICATION_ID }}
+          application-private-key: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_APPLICATION_PRIVATE_KEY }}
+          repository: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_REPOSITORY }}
+          workflow-file-name: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_WORKFLOW_FILE_NAME }}
+          workflow-payload: '{"environment": "production"}'
