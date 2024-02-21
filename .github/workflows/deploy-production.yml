@@ -18,8 +18,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v3
+        with:
+          application_id: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_APPLICATION_ID }}
+          application_private_key: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_APPLICATION_PRIVATE_KEY }}
+          organization: ${{ github.repository_owner }}
+          revoke_token: true
+
       - name: Build & tag docker image
         uses: AplinkosMinisterija/reusable-workflows/.github/actions/docker-build-tag-push@main
         with:
           environment: production
           push: true
+
+      - name: Trigger deploy
+        uses: convictional/trigger-workflow-and-wait@v1.6.5
+        with:
+          owner: ${{ github.repository_owner }}
+          repo: ${{ secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_REPOSITORY }}
+          github_token: ${{ steps.get_workflow_token.outputs.token }}
+          workflow_file_name: ${{secrets.TVARKAU_LIETUVA_TRIGGER_DEPLOY_WORKFLOW_FILE_NAME}}
+          client_payload: '{"environment": "development"}'
+  
