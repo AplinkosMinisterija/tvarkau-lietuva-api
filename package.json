@@ -36,6 +36,7 @@
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.13",
+    "@nestjs/terminus": "^10.2.3",
     "@types/buffer-to-stream": "^1.0.3",
     "@types/passport": "^1.0.16",
     "@types/passport-jwt": "^3.0.13",
