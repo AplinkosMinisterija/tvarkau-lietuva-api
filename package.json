@@ -37,6 +37,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.13",
     "@nestjs/terminus": "^10.2.3",
+    "@ntegral/nestjs-sentry": "^4.0.1",
+    "@sentry/node": "^7.107.0",
     "@types/buffer-to-stream": "^1.0.3",
     "@types/passport": "^1.0.16",
     "@types/passport-jwt": "^3.0.13",
