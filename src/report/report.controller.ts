@@ -63,7 +63,7 @@ export class ReportController {
     return this.postmarkService.sendBarkBeetleReport(
       createReportDto,
       images,
-      'temp@mail.com',
+      'benas.svedas@aad.am.lt',
     );
   }
 
