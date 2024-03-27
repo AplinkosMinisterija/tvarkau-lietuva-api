@@ -25,11 +25,15 @@ import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
 import { ReportCategory } from '../common/dto/report-category';
+import { PostmarkService } from './postmark.service';
 
 @Controller('reports')
 @ApiTags('reports')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(
+    private readonly reportService: ReportService,
+    private readonly postmarkService: PostmarkService,
+  ) {}
 
   @ApiCreatedResponse({
     description: 'New Report has been successfully created',
@@ -43,6 +47,24 @@ export class ReportController {
     @UploadedFiles() images: Array<Express.Multer.File>,
   ) {
     return this.reportService.createReport(createReportDto, images);
+  }
+
+  @ApiCreatedResponse({
+    description: 'New Report has been successfully sent',
+    type: PublicReportDto,
+  })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images', 4))
+  @Post('/bark-beetle')
+  sendBarkBeetleReport(
+    @Body() createReportDto: CreateReportDto,
+    @UploadedFiles() images: Array<Express.Multer.File>,
+  ) {
+    return this.postmarkService.sendBarkBeetleReport(
+      createReportDto,
+      images,
+      'temp@mail.com',
+    );
   }
 
   @ApiOkResponse({
