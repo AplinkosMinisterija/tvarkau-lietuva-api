@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { Report, ReportSchema } from '../repositories/reports/schemas';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { PostmarkService } from './postmark.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
     CloudinaryModule,
   ],
   controllers: [ReportController],
-  providers: [ReportService, ReportRepository],
+  providers: [ReportService, ReportRepository, PostmarkService],
 })
 export class ReportModule {}
