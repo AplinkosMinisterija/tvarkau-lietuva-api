@@ -3,6 +3,7 @@ import * as postmark from 'postmark';
 import { CreateReportDto } from './dto';
 import { TemplatedMessage } from 'postmark';
 import * as process from 'process';
+import { MessageSendingResponse } from 'postmark/dist/client/models';
 
 @Injectable()
 export class PostmarkService {
@@ -16,7 +17,7 @@ export class PostmarkService {
     createReportDto: CreateReportDto,
     images: Array<Express.Multer.File>,
     to: string,
-  ) {
+  ): Promise<MessageSendingResponse> {
     function encodeToBase64(file: Express.Multer.File) {
       return Buffer.from(file.buffer).toString('base64');
     }

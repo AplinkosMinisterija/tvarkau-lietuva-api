@@ -26,6 +26,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
 import { ReportCategory } from '../common/dto/report-category';
 import { PostmarkService } from './postmark.service';
+import { Message, MessageSendingResponse } from 'postmark/dist/client/models';
 
 @Controller('reports')
 @ApiTags('reports')
@@ -51,7 +52,7 @@ export class ReportController {
 
   @ApiCreatedResponse({
     description: 'New Report has been successfully sent',
-    type: PublicReportDto,
+    type: Message,
   })
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FilesInterceptor('images', 4))
@@ -59,7 +60,7 @@ export class ReportController {
   sendBarkBeetleReport(
     @Body() createReportDto: CreateReportDto,
     @UploadedFiles() images: Array<Express.Multer.File>,
-  ) {
+  ): Promise<MessageSendingResponse> {
     return this.postmarkService.sendBarkBeetleReport(
       createReportDto,
       images,
