@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FullReportDto } from './dto';
+import { FullReportDto, TransferReportDto } from './dto';
 import { DumpRepository } from '../repositories/dumps/dump.repository';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { CreateDumpDto, FullDumpDto, UpdateDumpDto } from './dto';
@@ -15,6 +15,7 @@ import { StatusRecordsDto } from '../report/dto';
 import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
 import { ReportCategory } from '../common/dto/report-category';
+import axios, { AxiosResponse } from 'axios';
 
 @Injectable()
 export class AdminService {
@@ -76,6 +77,25 @@ export class AdminService {
     return AdminService.docToFullDump(dump);
   }
 
+  async transferReport(
+    transferReportDto: TransferReportDto,
+  ): Promise<TransferReportDto> {
+    const response: AxiosResponse | null =
+      await this.sendTransferRequest(transferReportDto);
+    if (response == null) {
+      //return null;
+    }
+
+    // const name = response.data.displayName;
+    // const email = response.data.mail;
+    // const payload = { email: email };
+    // if (name == null || email == null) {
+    //   return null;
+    // }
+
+    return transferReportDto;
+  }
+
   private static docToFullDump(dump: Dump): FullDumpDto {
     return new FullDumpDto(
       dump._id.toString(),
@@ -135,5 +155,45 @@ export class AdminService {
     } else {
       throw new Error(`Invalid report category: ${value}`);
     }
+  }
+
+  async sendTransferRequest(
+    transferReportDto: TransferReportDto,
+  ): Promise<AxiosResponse | null> {
+    let returnValue: AxiosResponse | null = null;
+    const body = {
+      'TL pranešimo ID': transferReportDto.refId,
+      Turinys: transferReportDto.name,
+      Platuma: transferReportDto.latitude,
+      Ilguma: transferReportDto.longitude,
+      Statusas: transferReportDto.status,
+      'Data ir laikas': transferReportDto.reportDate,
+      'Vykdytojo e-mail': transferReportDto.email,
+    };
+    await axios
+      .post(
+        'https://prod-90.westeurope.logic.azure.com:443/workflows/d31513e4f45c476b8062580dce0713b0/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=TPbFkxkCTVAAWPBEPefOkg2eJlbvzA1rW6e933CsId8',
+        {
+          "TL pranešimo ID": "13223",
+          "Turinys": "Testinis pranešimas",
+          "Platuma": "54.6872",
+          "Ilguma": "25.2797",
+          "Statusas":"gautas",
+          "Data ir laikas":"2024-04-23T10:35:06.246Z",
+          "Vykdytojo e-mail":"justas.tacionis@aad.am.lt"
+        },
+      )
+      .then((response) => {
+        console.log('ans');
+        console.log(response.status);
+        console.log(response.data);
+        if (response.status == 200) {
+          console.log(response.data);
+          returnValue = response;
+        } else {
+          returnValue = null;
+        }
+      });
+    return returnValue;
   }
 }
