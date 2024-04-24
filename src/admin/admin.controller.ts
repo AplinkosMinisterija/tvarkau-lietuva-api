@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseBoolPipe,
@@ -121,8 +122,12 @@ export class AdminController {
   @Post('/reports/transfer')
   async transferReport(
     @Body() transferReportDto: TransferReportDto,
-  ): Promise<TransferReportDto> {
-    return await this.adminService.transferReport(transferReportDto);
+  ): Promise<FullReportDto> {
+    const transferReport =
+      await this.adminService.transferReport(transferReportDto);
+    if (!transferReport)
+      throw new InternalServerErrorException('Report transfer unsuccessful');
+    return transferReport;
   }
 
   @ApiOkResponse({

@@ -246,6 +246,61 @@ export class ReportRepository {
     return updatedReport;
   }
 
+  async updateTransferReport(
+    refId: string,
+    controle: string,
+    controleId: string,
+    editorEmail: string,
+  ): Promise<Report | null> {
+    const report = await this.reportModel
+      .findOne({ refId: { $eq: refId } })
+      .exec();
+
+    if (report != null) {
+      const historyEntry: HistoryDataDto = {
+        user: editorEmail,
+        date: new Date(),
+        edits: [],
+      };
+
+      historyEntry.edits.push(new HistoryEditsDto('controle', controle));
+      historyEntry.edits.push(new HistoryEditsDto('controleId', controleId));
+      historyEntry.edits.push(new HistoryEditsDto('isTransferred', 'true'));
+      if (historyEntry.edits.length != 0) {
+        await this.reportModel.findOneAndUpdate(
+          {
+            refId: refId,
+          },
+          {
+            $push: {
+              historyData: historyEntry,
+            },
+          },
+        );
+      }
+    }
+
+    let updatedReport = null;
+    if (report != null) {
+      updatedReport = await this.reportModel
+        .findOneAndUpdate(
+          {
+            refId: { $eq: refId },
+          },
+          {
+            $set: {
+              controle: controle,
+              controleId: controleId,
+              isTransferred: true,
+            },
+          },
+        )
+        .exec();
+    }
+
+    return updatedReport;
+  }
+
   async uploadImageToCloudinary(file: Express.Multer.File): Promise<string> {
     const upload = await this.cloudinary.uploadImage(file).catch(() => {
       throw new BadRequestException('Invalid file type.');
