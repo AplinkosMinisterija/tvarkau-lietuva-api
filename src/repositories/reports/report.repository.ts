@@ -269,7 +269,7 @@ export class ReportRepository {
       if (historyEntry.edits.length != 0) {
         await this.reportModel.findOneAndUpdate(
           {
-            refId: refId,
+            refId: { $eq: refId },
           },
           {
             $push: {
