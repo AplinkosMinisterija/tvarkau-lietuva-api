@@ -86,17 +86,18 @@ export class AdminService {
       return null;
     }
 
-    const controle = response.data[Object.keys(response.data)[0]];
-    const controleId = response.data[Object.keys(response.data)[1]];
+    const inspection = response.data[Object.keys(response.data)[0]];
+    const inspectionId = response.data[Object.keys(response.data)[1]];
 
     const report: Report | null =
       await this.reportRepository.updateTransferReport(
         transferReportDto.refId,
-        controle,
-        controleId,
+        inspection,
+        inspectionId,
         transferReportDto.email,
       );
     if (!report) return null;
+
     return AdminService.docToFullReport(report);
   }
 
@@ -123,8 +124,8 @@ export class AdminService {
       report.reportLong,
       report.reportLat,
       report.email,
-      report.controle,
-      report.controleId,
+      report.inspection,
+      report.inspectionId,
       report.isVisible,
       report.isDeleted,
       report.isTransferred,

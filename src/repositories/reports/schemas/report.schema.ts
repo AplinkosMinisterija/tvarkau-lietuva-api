@@ -27,10 +27,10 @@ export class Report {
   email: string;
 
   @Prop({ type: String, required: false })
-  controle: string;
+  inspection: string;
 
   @Prop({ type: String, required: false })
-  controleId: string;
+  inspectionId: string;
 
   @Prop({ type: String, required: true })
   comment: string;

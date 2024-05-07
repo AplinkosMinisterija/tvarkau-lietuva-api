@@ -248,8 +248,8 @@ export class ReportRepository {
 
   async updateTransferReport(
     refId: string,
-    controle: string,
-    controleId: string,
+    inspection: string,
+    inspectionId: string,
     editorEmail: string,
   ): Promise<Report | null> {
     const report = await this.reportModel
@@ -263,8 +263,10 @@ export class ReportRepository {
         edits: [],
       };
 
-      historyEntry.edits.push(new HistoryEditsDto('controle', controle));
-      historyEntry.edits.push(new HistoryEditsDto('controleId', controleId));
+      historyEntry.edits.push(new HistoryEditsDto('inspection', inspection));
+      historyEntry.edits.push(
+        new HistoryEditsDto('inspectionId', inspectionId),
+      );
       historyEntry.edits.push(new HistoryEditsDto('isTransferred', 'true'));
       if (historyEntry.edits.length != 0) {
         await this.reportModel.findOneAndUpdate(
@@ -289,8 +291,8 @@ export class ReportRepository {
           },
           {
             $set: {
-              controle: controle,
-              controleId: controleId,
+              inspection: inspection,
+              inspectionId: inspectionId,
               isTransferred: true,
             },
           },
