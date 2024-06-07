@@ -27,10 +27,10 @@ export class FullReportDto {
   email: string;
 
   @ApiProperty()
-  controle: string;
+  inspection: string;
 
   @ApiProperty()
-  controleId: string;
+  inspectionId: string;
 
   @ApiProperty()
   @ToBoolean()
@@ -73,8 +73,8 @@ export class FullReportDto {
     longitude: number,
     latitude: number,
     email: string,
-    controle: string,
-    controleId: string,
+    inspection: string,
+    inspectionId: string,
     isVisible: boolean,
     isDeleted: boolean,
     isTransferred: boolean,
@@ -93,8 +93,8 @@ export class FullReportDto {
     this.longitude = longitude;
     this.latitude = latitude;
     this.email = email;
-    this.controle = controle;
-    this.controleId = controleId;
+    this.inspection = inspection;
+    this.inspectionId = inspectionId;
     this.isVisible = isVisible;
     this.isDeleted = isDeleted;
     this.isTransferred = isTransferred;

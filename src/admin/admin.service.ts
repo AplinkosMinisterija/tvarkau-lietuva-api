@@ -165,7 +165,7 @@ export class AdminService {
     }
   }
 
-  async sendTransferRequest(
+  private async sendTransferRequest(
     transferReportDto: TransferReportDto,
   ): Promise<AxiosResponse | null> {
     let returnValue = null;
