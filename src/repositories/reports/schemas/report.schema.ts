@@ -26,6 +26,12 @@ export class Report {
   @Prop({ type: String, required: true })
   email: string;
 
+  @Prop({ type: String, required: false })
+  inspection: string;
+
+  @Prop({ type: String, required: false })
+  inspectionId: string;
+
   @Prop({ type: String, required: true })
   comment: string;
 
@@ -37,6 +43,9 @@ export class Report {
 
   @Prop({ type: Boolean, required: true, default: false })
   isDeleted: boolean;
+
+  @Prop({ type: Boolean, required: false, default: false })
+  isTransferred: boolean;
 
   @Prop({ type: Date, required: true, default: Date.now() })
   reportDate: Date;

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   ParseBoolPipe,
@@ -28,6 +29,7 @@ import {
   CreateDumpDto,
   FullDumpDto,
   FullReportDto,
+  TransferReportDto,
   UpdateDumpDto,
   UpdateReportDto,
 } from './dto';
@@ -111,6 +113,21 @@ export class AdminController {
     );
     if (!report) throw new NotFoundException('Report updating failed');
     return report;
+  }
+
+  @ApiOkResponse({
+    description: 'Report has been successfully transferred',
+    type: TransferReportDto,
+  })
+  @Post('/reports/transfer')
+  async transferReport(
+    @Body() transferReportDto: TransferReportDto,
+  ): Promise<FullReportDto> {
+    const transferReport =
+      await this.adminService.transferReport(transferReportDto);
+    if (!transferReport)
+      throw new InternalServerErrorException('Report transfer unsuccessful');
+    return transferReport;
   }
 
   @ApiOkResponse({

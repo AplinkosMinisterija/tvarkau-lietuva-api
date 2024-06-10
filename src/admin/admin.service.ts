@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FullReportDto } from './dto';
+import { FullReportDto, TransferReportDto } from './dto';
 import { DumpRepository } from '../repositories/dumps/dump.repository';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { CreateDumpDto, FullDumpDto, UpdateDumpDto } from './dto';
@@ -15,6 +15,7 @@ import { StatusRecordsDto } from '../report/dto';
 import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
 import { ReportCategory } from '../common/dto/report-category';
+import axios, { AxiosResponse } from 'axios';
 
 @Injectable()
 export class AdminService {
@@ -76,6 +77,30 @@ export class AdminService {
     return AdminService.docToFullDump(dump);
   }
 
+  async transferReport(
+    transferReportDto: TransferReportDto,
+  ): Promise<FullReportDto | null> {
+    const response: AxiosResponse | null =
+      await this.sendTransferRequest(transferReportDto);
+    if (response == null) {
+      return null;
+    }
+
+    const inspection = response.data[Object.keys(response.data)[0]];
+    const inspectionId = response.data[Object.keys(response.data)[1]];
+
+    const report: Report | null =
+      await this.reportRepository.updateTransferReport(
+        transferReportDto.refId,
+        inspection,
+        inspectionId,
+        transferReportDto.email,
+      );
+    if (!report) return null;
+
+    return AdminService.docToFullReport(report);
+  }
+
   private static docToFullDump(dump: Dump): FullDumpDto {
     return new FullDumpDto(
       dump._id.toString(),
@@ -99,8 +124,11 @@ export class AdminService {
       report.reportLong,
       report.reportLat,
       report.email,
+      report.inspection,
+      report.inspectionId,
       report.isVisible,
       report.isDeleted,
+      report.isTransferred,
       report.comment,
       report.status,
       report.reportDate,
@@ -135,5 +163,45 @@ export class AdminService {
     } else {
       throw new Error(`Invalid report category: ${value}`);
     }
+  }
+
+  private async sendTransferRequest(
+    transferReportDto: TransferReportDto,
+  ): Promise<AxiosResponse | null> {
+    let returnValue = null;
+    const data = JSON.stringify({
+      'TL pranešimo ID': transferReportDto.refId,
+      Turinys: transferReportDto.name,
+      Platuma: transferReportDto.latitude.toString(),
+      Ilguma: transferReportDto.longitude.toString(),
+      Statusas: transferReportDto.status,
+      'Data ir laikas': transferReportDto.reportDate.toString(),
+      'Vykdytojo e-mail': transferReportDto.email,
+    });
+
+    const config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: process.env['AADIS_URL'],
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: data,
+    };
+
+    await axios
+      .request(config)
+      .then((response) => {
+        if (response.status == 200) {
+          returnValue = response;
+        } else {
+          returnValue = null;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        returnValue = null;
+      });
+    return returnValue;
   }
 }
