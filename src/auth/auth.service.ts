@@ -40,7 +40,7 @@ export class AuthService {
       .then((response) => {
         if (response.status == 200) {
           const email = response.data.mail;
-          if (email.includes('@aad.am.lt')) {
+          if (email.includes('@aad.am.lt') || email.includes('@amvmt.lt')) {
             returnValue = response;
           } else {
             returnValue = null;
