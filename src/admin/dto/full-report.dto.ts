@@ -26,11 +26,11 @@ export class FullReportDto {
   @ApiProperty()
   email: string;
 
-  @ApiProperty()
-  inspection: string;
+  @ApiProperty({ nullable: true })
+  inspection?: string;
 
-  @ApiProperty()
-  inspectionId: string;
+  @ApiProperty({ nullable: true })
+  inspectionId?: string;
 
   @ApiProperty()
   @ToBoolean()
@@ -40,9 +40,9 @@ export class FullReportDto {
   @ToBoolean()
   isDeleted: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ nullable: true })
   @ToBoolean()
-  isTransferred: boolean;
+  isTransferred?: boolean;
 
   @ApiProperty()
   comment: string;
