@@ -25,11 +25,12 @@ import { CreateReportDto } from './dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
 import { ReportCategory } from '../common/dto/report-category';
+import { PostmarkService } from './postmark.service';
 
 @Controller('reports')
 @ApiTags('reports')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(private readonly reportService: ReportService,private readonly postmarkService: PostmarkService,) {}
 
   @ApiCreatedResponse({
     description: 'New Report has been successfully created',
@@ -85,5 +86,17 @@ export class ReportController {
     const report = await this.reportService.getReportById(refId);
     if (!report) throw new NotFoundException('Report not found');
     return report;
+  }
+
+  @ApiOkResponse({
+    description: 'New feedback report has been successfully found',
+    type: String,
+  })
+  @Post('/feedback-report')
+  sendFeedbackReport(
+    email: string, description: string
+  ): Promise<String> {
+    return this.postmarkService.sendUserFeedback(email, description
+    );
   }
 }
