@@ -24,7 +24,7 @@
     "prepare": "husky install"
   },
   "engines": {
-    "node": "20.x"
+    "node": "21.x"
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.1",

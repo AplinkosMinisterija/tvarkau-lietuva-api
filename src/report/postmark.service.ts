@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import * as postmark from "postmark";
 import { TemplatedMessage } from "postmark";
-import * as process from "process";
 import { MessageSendingResponse } from "postmark/dist/client/models";
+import * as process from "process";
 
 @Injectable()
 export class PostmarkService {
@@ -18,14 +18,15 @@ export class PostmarkService {
   ): Promise<String> {
 
     const templatedMessage: TemplatedMessage = {
-      TemplateId: Number(process.env["POSTMARK_TEMPLATE_ID"]),
-      From: email,
+      TemplateId: Number(process.env["POSTMARK_FEEDBACK_TEMPLATE_ID"]),
+      From: process.env["ADMIN_EMAIL"]!,
       To: process.env["ADMIN_EMAIL"],
       TemplateModel: {
         email: email,
         description: description
       }
     };
-    return 'Report sent successfully';
+    const message = this.client.sendEmailWithTemplate(templatedMessage);
+    return 'Successfully sent';
   }
 }
