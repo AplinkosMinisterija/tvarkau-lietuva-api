@@ -23,6 +23,13 @@ export class ReportService {
     return reports.map(ReportService.docToPublicReport);
   }
 
+  async getInvalid(
+    category?: ReportCategory,
+  ): Promise<PublicReportDto[]> {
+    const reports = await this.reportRepository.getAllReportsInvalid(false, category);
+    return reports.map(ReportService.docToPublicReport);
+  }
+
   async createReport(
     createReport: CreateReportDto,
     images: Array<Express.Multer.File>,

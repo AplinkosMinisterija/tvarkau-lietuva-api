@@ -46,6 +46,32 @@ export class ReportRepository {
     return this.reportModel.find().exec();
   }
 
+  async getAllReportsInvalid(
+    isDeleted: boolean,
+    category?: ReportCategory,
+  ): Promise<Report[]> {
+    const query: any = { isDeleted: isDeleted };
+    const reports = await this.reportModel.find({
+      type: { $nin: ['trash', 'forest', 'beetle', 'permits'] },
+    }).exec();
+
+    console.log(reports);
+    const invalid = await this.reportModel.find(query).sort({ reportDate: -1 }).exec();
+    for(var i = 0; i < invalid.length; i++) {
+      console.log(invalid[i]);
+      console.log(invalid[i].historyData);
+      for(var j=0; j<invalid[i].historyData.length; j++) {
+          console.log('History data');
+        console.log(invalid[i].historyData[j]);
+        for(var k=0; k <invalid[i].historyData[j].edits.length; k++) {
+          console.log(invalid[i].historyData[j].edits[k]);
+        }
+      }
+      console.log(invalid[i].statusRecords);
+    }
+    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
+  }
+
   getAllReports(
     isDeleted: boolean,
     category?: ReportCategory,
