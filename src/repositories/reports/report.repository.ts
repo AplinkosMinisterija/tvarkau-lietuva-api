@@ -55,19 +55,18 @@ export class ReportRepository {
       type: { $nin: ['trash', 'forest', 'beetle', 'permits'] },
     }).exec();
 
-    console.log(reports);
-    const invalid = await this.reportModel.find(query).sort({ reportDate: -1 }).exec();
-    for(var i = 0; i < invalid.length; i++) {
-      console.log(invalid[i]);
-      console.log(invalid[i].historyData);
-      for(var j=0; j<invalid[i].historyData.length; j++) {
+
+    for(var i = 0; i < reports.length; i++) {
+      console.log(reports[i]);
+      console.log(reports[i].historyData);
+      for(var j=0; j<reports[i].historyData.length; j++) {
           console.log('History data');
-        console.log(invalid[i].historyData[j]);
-        for(var k=0; k <invalid[i].historyData[j].edits.length; k++) {
-          console.log(invalid[i].historyData[j].edits[k]);
+        console.log(reports[i].historyData[j]);
+        for(var k=0; k <reports[i].historyData[j].edits.length; k++) {
+          console.log(reports[i].historyData[j].edits[k]);
         }
       }
-      console.log(invalid[i].statusRecords);
+      console.log(reports[i].statusRecords);
     }
     return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
