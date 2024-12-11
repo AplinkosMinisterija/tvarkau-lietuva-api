@@ -25,6 +25,27 @@ export class ReportRepository {
     return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
+  async getParameter(category?: ReportCategory): Promise<Report[]> {
+    const reports = await this.reportModel
+      .find()
+      .exec();
+
+    for (var i = 0; i < reports.length; i++) {
+      const changedReport = await this.reportModel.updateOne(
+        {
+          refId: reports[i].refId,
+        },
+        {
+          $set: {
+            emailFeedbackStage: 0,
+          },
+        },
+      )
+    }
+
+    return this.reportModel.find().exec();
+  }
+
   getAllReports(
     isDeleted: boolean,
     category?: ReportCategory,
@@ -93,6 +114,7 @@ export class ReportRepository {
       isDeleted: false,
       imageUrls: imageUrls,
       officerImageUrls: [],
+      emailFeedbackStage: 0,
       historyData: [
         {
           user: createReport.email,

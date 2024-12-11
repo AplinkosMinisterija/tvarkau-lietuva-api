@@ -63,6 +63,19 @@ export class ReportController {
   }
 
   @ApiOkResponse({
+    description: "All visible reports have been successfully found",
+    type: [PublicReportDto]
+  })
+  @ApiQuery({ name: "category", enum: ReportCategory, required: false })
+  @Get("/parameter")
+  getChangeParameter(
+    @Query("category", new ParseEnumPipe(ReportCategory, { optional: true }))
+    category?: ReportCategory
+  ): Promise<PublicReportDto[]> {
+    return this.reportService.getParameter(category);
+  }
+
+  @ApiOkResponse({
     description: "Report statistics have been successfully fetched",
     type: ReportStatisticsDto
   })
