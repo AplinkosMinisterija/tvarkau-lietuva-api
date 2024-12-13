@@ -25,40 +25,6 @@ export class ReportRepository {
     return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
-  async getParameter(category?: ReportCategory): Promise<Report[]> {
-    const reports = await this.reportModel
-      .find()
-      .exec();
-
-    for (var i = 0; i < reports.length; i++) {
-      const changedReport = await this.reportModel.updateOne(
-        {
-          refId: reports[i].refId,
-        },
-        {
-          $set: {
-            emailFeedbackStage: 0,
-          },
-        },
-      )
-    }
-
-    return this.reportModel.find().exec();
-  }
-
-  async getAllReportsInvalid(
-    isDeleted: boolean,
-    category?: ReportCategory,
-  ): Promise<Report[]> {
-    const query: any = { isDeleted: isDeleted };
-    const reports = await this.reportModel.deleteOne({
-      type: 'trash2'
-    }).exec();
-
-
-    return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
-  }
-
   getAllReports(
     isDeleted: boolean,
     category?: ReportCategory,
@@ -137,6 +103,10 @@ export class ReportRepository {
               field: 'status',
               change: 'gautas',
             },
+            {
+              field: 'emailFeedbackStage',
+              change: '1',
+            },
           ],
         },
       ],
@@ -147,6 +117,9 @@ export class ReportRepository {
         },
       ],
     });
+    if(newReport != null) {
+
+    }
     return await newReport.save();
   }
 
