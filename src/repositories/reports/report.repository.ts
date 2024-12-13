@@ -8,11 +8,13 @@ import { BadRequestException } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
 import { ReportCategory } from '../../common/dto/report-category';
+import { PostmarkService } from 'src/report/postmark.service';
 
 export class ReportRepository {
   constructor(
     @InjectModel(Report.name) private reportModel: Model<Report>,
     private cloudinary: CloudinaryService,
+    private readonly postmarkService: PostmarkService,
   ) {}
 
   getVisibleReports(category?: ReportCategory): Promise<Report[]> {
@@ -79,6 +81,9 @@ export class ReportRepository {
     }
     const reports = await this.reportModel.find().exec();
     const reportCount = reports.length;
+    if(reports != null) {
+      await this.postmarkService.sendReceivedReportEmail(createReport.email, this.postmarkService.generateReportUrl(reportCount + 1));
+    }
     const newReport = new this.reportModel({
       name: createReport.name,
       type: createReport.category,
@@ -93,7 +98,7 @@ export class ReportRepository {
       isDeleted: false,
       imageUrls: imageUrls,
       officerImageUrls: [],
-      emailFeedbackStage: 0,
+      emailFeedbackStage: 1,
       historyData: [
         {
           user: createReport.email,
@@ -117,9 +122,7 @@ export class ReportRepository {
         },
       ],
     });
-    if(newReport != null) {
 
-    }
     return await newReport.save();
   }
 
@@ -193,19 +196,65 @@ export class ReportRepository {
             );
           }
         }
-        await this.reportModel.updateOne(
-          {
-            refId: updateReport.refId,
-          },
-          {
-            $push: {
-              statusRecords: {
-                status: updateReport.status,
-                date: new Date(),
+
+        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2){
+          await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
+          await this.reportModel.updateOne(
+            {
+              refId: updateReport.refId,
+            },
+            {
+              $push: {
+                statusRecords: {
+                  status: updateReport.status,
+                  date: new Date(),
+                },
+              },
+              $set: {
+                emailFeedbackStage: 2,
+              }
+            },
+          );
+          historyEntry.edits.push(
+            new HistoryEditsDto('emailFeedbackStage', '2'),
+          );
+        }else if((updateReport.status == 'ištirtas' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3){
+          await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
+          await this.reportModel.updateOne(
+            {
+              refId: updateReport.refId,
+            },
+            {
+              $push: {
+                statusRecords: {
+                  status: updateReport.status,
+                  date: new Date(),
+                },
+              },
+              $set: {
+                emailFeedbackStage: 3,
+              }
+            },
+          );
+          historyEntry.edits.push(
+            new HistoryEditsDto('emailFeedbackStage', '3'),
+          );
+        }else {
+          await this.reportModel.updateOne(
+            {
+              refId: updateReport.refId,
+            },
+            {
+              $push: {
+                statusRecords: {
+                  status: updateReport.status,
+                  date: new Date(),
+                },
               },
             },
-          },
-        );
+          );
+        }
+
         historyEntry.edits.push(
           new HistoryEditsDto('status', updateReport.status),
         );

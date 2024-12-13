@@ -76,4 +76,19 @@ export class PostmarkService {
     const message = this.client.sendEmailWithTemplate(templatedMessage);
     return 'Successfully sent';
   }
+
+  generateReportUrl(refId: string | number): string {
+    let id = '';
+    if (typeof refId === 'number') {
+      id = String(refId);
+    }else{
+      id = refId;
+    }
+    if (id.length > 8) {
+      throw new Error('refId cannot be longer than 8 characters.');
+    }
+    const paddedZeros = '0'.repeat(8 - id.length);
+    const reportName = "TLP-A"+paddedZeros+id.toUpperCase();
+    return "https://tvarkaulietuva.lt/pranesimas?id="+reportName;
+  }
 }

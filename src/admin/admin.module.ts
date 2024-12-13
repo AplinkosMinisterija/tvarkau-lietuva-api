@@ -7,6 +7,7 @@ import { Dump, DumpSchema } from '../repositories/dumps/schemas';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { DumpRepository } from '../repositories/dumps/dump.repository';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { PostmarkService } from 'src/report/postmark.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
     CloudinaryModule,
   ],
   controllers: [AdminController],
-  providers: [AdminService, ReportRepository, DumpRepository],
+  providers: [AdminService, ReportRepository, DumpRepository, PostmarkService],
 })
 export class AdminModule {}
