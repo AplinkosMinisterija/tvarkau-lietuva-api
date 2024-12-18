@@ -5,6 +5,7 @@ import {
   IsLatitude,
   IsLongitude,
   IsNotEmpty,
+  IsBoolean
 } from 'class-validator';
 import { ReportCategory } from '../../common/dto/report-category';
 
@@ -23,6 +24,9 @@ export class CreateReportDto {
 
   @IsEmail()
   email: string;
+
+  @IsBoolean()
+  automaticEmailsEnabled: boolean;
 
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   images: any[];

@@ -99,6 +99,7 @@ export class ReportRepository {
       imageUrls: imageUrls,
       officerImageUrls: [],
       emailFeedbackStage: 1,
+      automaticEmailsEnabled: createReport.automaticEmailsEnabled,
       historyData: [
         {
           user: createReport.email,
@@ -197,7 +198,7 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2){
+        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled){
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
@@ -218,7 +219,7 @@ export class ReportRepository {
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3){
+        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled){
           await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {

@@ -59,6 +59,9 @@ export class Report {
   @Prop({ type: Number, required: true })
   emailFeedbackStage: number;
 
+  @Prop({ type: Boolean, required: false, default: false })
+  automaticEmailsEnabled: boolean;
+
   @Prop({
     type: [
       {
