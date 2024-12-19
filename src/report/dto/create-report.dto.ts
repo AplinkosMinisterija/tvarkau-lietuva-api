@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 import { ReportCategory } from '../../common/dto/report-category';
+import { ToBoolean } from 'src/common/transform/boolean.transform';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -23,6 +24,10 @@ export class CreateReportDto {
 
   @IsEmail()
   email: string;
+
+  @ApiProperty()
+  @ToBoolean()
+  automaticEmailsEnabled: boolean;
 
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   images: any[];

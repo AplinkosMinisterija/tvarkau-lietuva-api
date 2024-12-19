@@ -136,6 +136,7 @@ export class AdminService {
       report.imageUrls,
       report.historyData.map(AdminService.docToHistoryData),
       report.statusRecords.map(AdminService.docToStatusRecords),
+      report.emailFeedbackStage,
     );
   }
 
