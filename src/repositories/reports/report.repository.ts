@@ -81,7 +81,7 @@ export class ReportRepository {
     }
     const reports = await this.reportModel.find().exec();
     const reportCount = reports.length;
-    if(reports != null && !createReport.automaticEmailsEnabled) {
+    if(reports != null && createReport.automaticEmailsEnabled != false) {
       await this.postmarkService.sendReceivedReportEmail(createReport.email, this.postmarkService.generateReportUrl(reportCount + 1));
     }
     const newReport = new this.reportModel({
