@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ToBoolean } from '../../common/transform/boolean.transform';
+import { ReportCategory } from 'src/common/dto/report-category';
 
 export class UpdateReportDto {
   @ApiProperty()
@@ -7,6 +8,9 @@ export class UpdateReportDto {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  category: ReportCategory;
 
   @ApiProperty()
   longitude: number;
@@ -40,6 +44,7 @@ export class UpdateReportDto {
   constructor(
     refId: string,
     name: string,
+    category: ReportCategory,
     longitude: number,
     latitude: number,
     isVisible: boolean,
@@ -52,6 +57,7 @@ export class UpdateReportDto {
   ) {
     this.refId = refId;
     this.name = name;
+    this.category = category;
     this.longitude = longitude;
     this.latitude = latitude;
     this.isVisible = isVisible;
