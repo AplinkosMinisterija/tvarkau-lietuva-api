@@ -139,6 +139,9 @@ export class ReportRepository {
       if (updateReport.name != report.name) {
         historyEntry.edits.push(new HistoryEditsDto('name', updateReport.name));
       }
+      if (updateReport.category != report.type) {
+        historyEntry.edits.push(new HistoryEditsDto('category', updateReport.category));
+      }
       if (updateReport.longitude != report.reportLong) {
         historyEntry.edits.push(
           new HistoryEditsDto('reportLong', updateReport.longitude.toString()),
@@ -228,6 +231,7 @@ export class ReportRepository {
               name: updateReport.name,
               reportLong: updateReport.longitude,
               reportLat: updateReport.latitude,
+              type: updateReport.category,
               status: updateReport.status,
               isVisible: updateReport.isVisible,
               isDeleted: updateReport.isDeleted,
