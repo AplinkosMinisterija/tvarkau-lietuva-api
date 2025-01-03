@@ -139,7 +139,7 @@ export class ReportRepository {
       if (updateReport.name != report.name) {
         historyEntry.edits.push(new HistoryEditsDto('name', updateReport.name));
       }
-      if (updateReport.category != report.type) {
+      if (updateReport.category != report.type && updateReport.category != null) {
         historyEntry.edits.push(new HistoryEditsDto('category', updateReport.category));
       }
       if (updateReport.longitude != report.reportLong) {
