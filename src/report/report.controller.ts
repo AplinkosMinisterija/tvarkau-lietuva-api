@@ -26,7 +26,6 @@ import { FilesInterceptor } from "@nestjs/platform-express";
 import { ReportStatisticsDto } from "./dto/report-statistics.dto";
 import { ReportCategory } from "../common/dto/report-category";
 import { PostmarkService } from "./postmark.service";
-import { MessageSendingResponse } from "postmark/dist/client/models";
 import { CreateFeedbackReportDto } from "./dto/create-feedback-report.dto";
 
 @Controller("reports")
