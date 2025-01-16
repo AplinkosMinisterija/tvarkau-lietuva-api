@@ -56,6 +56,12 @@ export class Report {
   @Prop({ type: Array<string>, default: [] })
   imageUrls: string[];
 
+  @Prop({ type: Number, required: true })
+  emailFeedbackStage: number;
+
+  @Prop({ type: Boolean, required: false, default: false })
+  automaticEmailsEnabled: boolean;
+
   @Prop({
     type: [
       {
