@@ -202,7 +202,7 @@ export class ReportRepository {
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
-              refId: updateReport.refId,
+              refId: { $eq: updateReport.refId },
             },
             {
               $push: {
@@ -223,7 +223,7 @@ export class ReportRepository {
           await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
-              refId: updateReport.refId,
+              refId: { $eq: updateReport.refId },
             },
             {
               $push: {
@@ -243,7 +243,7 @@ export class ReportRepository {
         }else {
           await this.reportModel.updateOne(
             {
-              refId: updateReport.refId,
+              refId: { $eq: updateReport.refId },
             },
             {
               $push: {
@@ -354,6 +354,9 @@ export class ReportRepository {
               isTransferred: true,
             },
           },
+          {
+            returnNewDocument: true,
+          }
         )
         .exec();
     }
