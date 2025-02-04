@@ -11,6 +11,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { CommonModule } from './common/common.module';
 import { SentryInterceptor, SentryModule } from '@ntegral/nestjs-sentry';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PermitModule } from './permit/permit.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     AdminModule,
     DumpModule,
     ReportModule,
+    PermitModule,
     MongooseModule.forRoot(process.env['DATABASE_URL']!),
     AuthModule,
     CloudinaryModule,
