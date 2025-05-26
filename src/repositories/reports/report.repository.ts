@@ -201,7 +201,28 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled){
+        if(updateReport.status == 'kita'){
+          await this.reportModel.updateOne(
+            {
+              refId: { $eq: updateReport.refId },
+            },
+            {
+              $push: {
+                statusRecords: {
+                  status: updateReport.status,
+                  date: new Date(),
+                },
+              },
+              $set: {
+                emailFeedbackStage: 0,
+                automaticEmailsEnabled: false,
+              }
+            },
+          );
+          historyEntry.edits.push(
+            new HistoryEditsDto('emailFeedbackStage', '0'),
+          );
+        }else if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled){
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
