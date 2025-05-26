@@ -192,7 +192,7 @@ export class ReportRepository {
         );
       }
 
-      if(updateReport.category == 'kita'){
+      if(updateReport.category == 'other'){
         await this.reportModel.updateOne(
           {
             refId: { $eq: updateReport.refId },
@@ -216,7 +216,7 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'kita' && report.type != 'kita')){
+        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'other' && report.type != 'other')){
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
@@ -237,7 +237,7 @@ export class ReportRepository {
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'kita' && report.type != 'kita')){
+        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'other' && report.type != 'other')){
           await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
