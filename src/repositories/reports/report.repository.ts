@@ -191,6 +191,21 @@ export class ReportRepository {
           ),
         );
       }
+
+      if(updateReport.category == 'kita'){
+        await this.reportModel.updateOne(
+          {
+            refId: { $eq: updateReport.refId },
+          },
+          {
+            $set: {
+              emailFeedbackStage: 0,
+              automaticEmailsEnabled: false,
+            }
+          },
+        );
+      }
+
       if (updateReport.status != report.status) {
         for (let i = 0; i < report.statusRecords.length; i++) {
           if (report.statusRecords[i].status == updateReport.status) {
@@ -201,28 +216,7 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'kita'){
-          await this.reportModel.updateOne(
-            {
-              refId: { $eq: updateReport.refId },
-            },
-            {
-              $push: {
-                statusRecords: {
-                  status: updateReport.status,
-                  date: new Date(),
-                },
-              },
-              $set: {
-                emailFeedbackStage: 0,
-                automaticEmailsEnabled: false,
-              }
-            },
-          );
-          historyEntry.edits.push(
-            new HistoryEditsDto('emailFeedbackStage', '0'),
-          );
-        }else if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled){
+        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && updateReport.category != 'kita'){
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
@@ -243,7 +237,7 @@ export class ReportRepository {
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled){
+        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && updateReport.category != 'kita'){
           await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
           await this.reportModel.updateOne(
             {
@@ -297,6 +291,7 @@ export class ReportRepository {
         );
       }
     }
+
 
     let updatedReport = null;
     if (report != null) {
