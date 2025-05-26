@@ -3,4 +3,5 @@ export enum ReportCategory {
   forest = 'forest',
   beetle = 'beetle',
   permits = 'permits',
+  kita = 'kita',
 }
