@@ -178,6 +178,7 @@ export class AdminService {
       Statusas: transferReportDto.status,
       'Data ir laikas': transferReportDto.reportDate.toString(),
       'Vykdytojo e-mail': transferReportDto.email,
+      'Pranešėjo e-mail': transferReportDto.creatorEmail,
     });
 
     const config = {

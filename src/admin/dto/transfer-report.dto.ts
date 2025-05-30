@@ -22,6 +22,9 @@ export class TransferReportDto {
   @ApiProperty()
   email: string;
 
+  @ApiProperty()
+  creatorEmail: string;
+
   constructor(
     name: string,
     refId: string,
@@ -30,6 +33,7 @@ export class TransferReportDto {
     status: string,
     reportDate: Date,
     email: string,
+    creatorEmail: string,
   ) {
     this.name = name;
     this.refId = refId;
@@ -38,5 +42,6 @@ export class TransferReportDto {
     this.status = status;
     this.reportDate = reportDate;
     this.email = email;
+    this.creatorEmail = creatorEmail;
   }
 }
