@@ -41,7 +41,9 @@ export class ReportRepository {
   }
 
   async getReportById(refId: number): Promise<Report | null> {
-    return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
+    return await this.reportModel
+      .findOne({ refId: { $eq: refId }, isVisible: true })
+      .exec();
   }
 
   getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {
