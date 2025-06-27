@@ -6,6 +6,7 @@ import { ReportRepository } from '../repositories/reports/report.repository';
 import { Report, ReportSchema } from '../repositories/reports/schemas';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 import { PostmarkService } from './postmark.service';
+import { GeojsonService } from "./geojson.service";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { PostmarkService } from './postmark.service';
     CloudinaryModule,
   ],
   controllers: [ReportController],
-  providers: [ReportService, ReportRepository, PostmarkService],
+  providers: [ReportService, ReportRepository, PostmarkService, GeojsonService],
 })
 export class ReportModule {}

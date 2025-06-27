@@ -15,7 +15,7 @@ export class PostmarkService {
   async sendUserFeedback(
     email: string,
     description: string
-  ): Promise<String> {
+  ): Promise<string> {
     const templatedMessage: TemplatedMessage = {
       TemplateId: Number(process.env["POSTMARK_FEEDBACK_TEMPLATE_ID"]),
       From: process.env["ADMIN_EMAIL"]!,
