@@ -33,6 +33,12 @@ export class ReportService {
     return ReportService.docToPublicReport(report);
   }
 
+  async getVisibleReportById(refId: number): Promise<PublicReportDto | null> {
+    const report = await this.reportRepository.getVisibleReportById(refId);
+    if (!report) return null;
+    return ReportService.docToPublicReport(report);
+  }
+
   async getReportStatistics(
     category?: ReportCategory,
   ): Promise<ReportStatisticsDto> {
