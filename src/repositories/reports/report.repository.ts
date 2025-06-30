@@ -40,10 +40,13 @@ export class ReportRepository {
     return this.reportModel.find(query).sort({ reportDate: -1 }).exec();
   }
 
-  async getReportById(refId: number): Promise<Report | null> {
+  async getVisibleReportById(refId: number): Promise<Report | null> {
     return await this.reportModel
       .findOne({ refId: { $eq: refId }, isVisible: true })
       .exec();
+  }
+  async getReportById(refId: number): Promise<Report | null> {
+    return await this.reportModel.findOne({ refId: { $eq: refId } }).exec();
   }
 
   getVisibleStatusCounts(category?: ReportCategory): Promise<any[]> {

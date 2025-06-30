@@ -91,7 +91,7 @@ export class ReportController {
   async getReportById(
     @Param('refId', ParseIntPipe) refId: number,
   ): Promise<PublicReportDto> {
-    const report = await this.reportService.getReportById(refId);
+    const report = await this.reportService.getVisibleReportById(refId);
     if (!report) throw new NotFoundException('Report not found');
     return report;
   }
