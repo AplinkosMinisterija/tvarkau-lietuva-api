@@ -87,7 +87,11 @@ export class ReportRepository {
     const reports = await this.reportModel.find().exec();
     const reportCount = reports.length;
     if(reports != null && createReport.automaticEmailsEnabled != false) {
-      await this.postmarkService.sendReceivedReportEmail(createReport.email, this.postmarkService.generateReportUrl(reportCount + 1));
+      await this.postmarkService.sendReceivedReportEmail(
+        createReport.email,
+        this.postmarkService.generateReportUrl(reportCount + 1, false),
+        this.postmarkService.generateReportUrl(reportCount + 1, true),
+      );
     }
     const newReport = new this.reportModel({
       name: createReport.name,
@@ -222,7 +226,7 @@ export class ReportRepository {
         }
 
         if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
-          await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
+          await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId, false), this.postmarkService.generateReportUrl(updateReport.refId, true));
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -243,7 +247,7 @@ export class ReportRepository {
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
         }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
-          await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId));
+          await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId,false),this.postmarkService.generateReportUrl(updateReport.refId,true));
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
