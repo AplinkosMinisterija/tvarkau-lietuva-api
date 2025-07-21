@@ -1,17 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as postmark from 'postmark';
 import { TemplatedMessage } from 'postmark';
 import * as process from 'process';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class PostmarkService {
   private client: postmark.ServerClient;
 
-  constructor() {
+  constructor(private cloudinary: CloudinaryService) {
     this.client = new postmark.ServerClient(process.env['POSTMARK_API_TOKEN']!);
   }
 
-  async sendUserFeedback(email: string, description: string): Promise<string> {
+  async sendUserFeedback(
+    email: string,
+    description: string,
+    images?: Array<Express.Multer.File>,
+  ): Promise<string> {
+    const imageUrls: string[] = [];
+    if (images) {
+      for (let i = 0; i < images.length; i++) {
+        imageUrls[i] = await this.uploadImageToCloudinary(images[i]);
+      }
+    }
+
+    const links = [];
+    for (let i = 0; i < imageUrls.length; i++) {
+      links.push({ url: imageUrls[i] });
+    }
+
     const templatedMessage: TemplatedMessage = {
       TemplateId: Number(process.env['POSTMARK_FEEDBACK_TEMPLATE_ID']),
       From: process.env['ADMIN_EMAIL']!,
@@ -19,6 +36,7 @@ export class PostmarkService {
       TemplateModel: {
         email: email,
         description: description,
+        links: links,
       },
     };
     const message = this.client.sendEmailWithTemplate(templatedMessage);
@@ -99,6 +117,17 @@ export class PostmarkService {
       return reportName;
     } else {
       return 'https://tvarkaulietuva.lt/pranesimas?id=' + reportName;
+    }
+  }
+
+  async uploadImageToCloudinary(file: Express.Multer.File): Promise<string> {
+    const upload = await this.cloudinary.uploadImage(file).catch(() => {
+      throw new BadRequestException('Invalid file type.');
+    });
+    if (upload != undefined) {
+      return upload.secure_url;
+    } else {
+      throw new BadRequestException('Invalid file type');
     }
   }
 }

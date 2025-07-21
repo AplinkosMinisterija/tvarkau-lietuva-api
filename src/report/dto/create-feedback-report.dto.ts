@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsEnum,
-  IsLatitude,
-  IsLongitude,
-  IsNotEmpty,
-} from 'class-validator';
-import { ReportCategory } from '../../common/dto/report-category';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateFeedbackReportDto {
   @IsNotEmpty()
@@ -14,4 +7,8 @@ export class CreateFeedbackReportDto {
 
   @IsEmail()
   email: string;
+
+  @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
+  @IsOptional()
+  images?: any[];
 }

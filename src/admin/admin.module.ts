@@ -7,7 +7,7 @@ import { Dump, DumpSchema } from '../repositories/dumps/schemas';
 import { ReportRepository } from '../repositories/reports/report.repository';
 import { DumpRepository } from '../repositories/dumps/dump.repository';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { PostmarkService } from 'src/report/postmark.service';
+import { PostmarkService } from "../report/postmark.service";
 
 @Module({
   imports: [

@@ -29,7 +29,6 @@ import { PostmarkService } from './postmark.service';
 import { CreateFeedbackReportDto } from './dto/create-feedback-report.dto';
 import { JsonCoordsDto } from './dto/json-coords.dto';
 import { GeojsonService } from './geojson.service';
-import { FullDumpDto } from "../admin/dto";
 
 @Controller('reports')
 @ApiTags('reports')
@@ -97,16 +96,20 @@ export class ReportController {
   }
 
   @ApiOkResponse({
-    description: 'New feedback report has been successfully found',
+    description: 'New feedback report has been successfully sent',
     type: String,
   })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FilesInterceptor('images', 4))
   @Post('/feedback-report')
   sendFeedbackReport(
     @Body() createFeedbackReportDto: CreateFeedbackReportDto,
+    @UploadedFiles() images: Array<Express.Multer.File>,
   ): Promise<string> {
     return this.postmarkService.sendUserFeedback(
       createFeedbackReportDto.email,
       createFeedbackReportDto.description,
+      images,
     );
   }
 
