@@ -11,6 +11,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { CommonModule } from './common/common.module';
 import { SentryInterceptor, SentryModule } from '@ntegral/nestjs-sentry';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PostmarkService } from "./report/postmark.service";
 
 @Module({
   imports: [

@@ -57,7 +57,7 @@ export class ReportService {
 
   private static filterStatistics(e: any, status: string): number {
     return e.filter((stat: { _id: string }) => stat._id == status).length > 0
-      ? e.filter((stat: { _id: string }) => stat._id == status)[0].count ?? 0
+      ? (e.filter((stat: { _id: string }) => stat._id == status)[0].count ?? 0)
       : 0;
   }
 

@@ -4,12 +4,13 @@ import { Report } from './schemas';
 import { CreateReportDto } from '../../report/dto';
 import { UpdateReportDto } from '../../admin/dto';
 import { CloudinaryService } from '../../cloudinary/cloudinary.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { HistoryDataDto } from '../../admin/dto/history-data.dto';
 import { HistoryEditsDto } from '../../admin/dto/history-edits.dto';
 import { ReportCategory } from '../../common/dto/report-category';
 import { PostmarkService } from 'src/report/postmark.service';
 
+@Injectable()
 export class ReportRepository {
   constructor(
     @InjectModel(Report.name) private reportModel: Model<Report>,
