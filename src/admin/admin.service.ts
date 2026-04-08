@@ -16,6 +16,7 @@ import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
 import { ReportCategory } from '../common/dto/report-category';
 import axios, { AxiosResponse } from 'axios';
+import { FullReportStatisticsDto } from './dto/full-report-statistics.dto';
 
 @Injectable()
 export class AdminService {
@@ -204,5 +205,38 @@ export class AdminService {
         returnValue = null;
       });
     return returnValue;
+  }
+
+  async getFullReportStatistics(
+    dateFrom?: Date,
+    dateTo?: Date,
+  ): Promise<FullReportStatisticsDto> {
+    const [result] = await this.reportRepository.getFullStatisticsCounts(
+      dateFrom,
+      dateTo,
+    );
+    return AdminService.docToFullReportStatistics(result);
+  }
+
+  private static filterStatistics(e: any, status: string): number {
+    return e.filter((stat: { _id: string }) => stat._id == status).length > 0
+      ? (e.filter((stat: { _id: string }) => stat._id == status)[0].count ?? 0)
+      : 0;
+  }
+
+  private static docToFullReportStatistics(
+    result: any,
+  ): FullReportStatisticsDto {
+    const facetCount = (facet: any[]) => facet[0]?.count ?? 0;
+    return new FullReportStatisticsDto(
+      facetCount(result.total),
+      AdminService.filterStatistics(result.byStatus, 'gautas'),
+      AdminService.filterStatistics(result.byStatus, 'tiriamas'),
+      AdminService.filterStatistics(result.byStatus, 'išspręsta'),
+      AdminService.filterStatistics(result.byStatus, 'nepasitvirtino'),
+      facetCount(result.deleted),
+      facetCount(result.notVisible),
+      facetCount(result.transferred),
+    );
   }
 }

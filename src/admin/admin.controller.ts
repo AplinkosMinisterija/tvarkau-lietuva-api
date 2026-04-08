@@ -37,6 +37,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
 import { ReportCategory } from '../common/dto/report-category';
+import { FullReportStatisticsDto } from './dto/full-report-statistics.dto';
+import { FullReportStatisticsQueryDto } from './dto/full-report-statistics-query.dto';
 
 @Controller('admin')
 @ApiTags('admin')
@@ -161,4 +163,20 @@ export class AdminController {
   async createDump(@Body() createDumpDto: CreateDumpDto): Promise<FullDumpDto> {
     return await this.adminService.createDump(createDumpDto);
   }
+
+  @Get('/statistics')
+  @ApiOkResponse({
+    description: 'Report statistics have been successfully fetched',
+    type: FullReportStatisticsDto,
+  })
+  getFullStatistics(
+    @Query() query: FullReportStatisticsQueryDto,
+  ): Promise<FullReportStatisticsDto> {
+    return this.adminService.getFullReportStatistics(
+      query.dateFrom,
+      query.dateTo,
+    );
+  }
+
+
 }
