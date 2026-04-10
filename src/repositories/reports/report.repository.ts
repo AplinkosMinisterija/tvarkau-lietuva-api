@@ -106,6 +106,26 @@ export class ReportRepository {
       .exec();
   }
 
+  async getAnalyticsReports(
+    dateFrom?: Date,
+    dateTo?: Date,
+    category?: ReportCategory,
+    status?: string,
+  ): Promise<any[]> {
+    const query: any = { isDeleted: false };
+
+    if (category) query.type = { $eq: category };
+    if (status) query.status = { $eq: status };
+
+    if (dateFrom || dateTo) {
+      query.reportDate = {};
+      if (dateFrom) query.reportDate.$gte = dateFrom;
+      if (dateTo) query.reportDate.$lte = dateTo;
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).lean().exec();
+  }
+
   async createReport(
     createReport: CreateReportDto,
     images: Array<Express.Multer.File>,

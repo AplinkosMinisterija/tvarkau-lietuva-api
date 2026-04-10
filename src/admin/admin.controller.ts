@@ -37,8 +37,8 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Request } from 'express';
 import { ReportCategory } from '../common/dto/report-category';
-import { FullReportStatisticsDto } from './dto/full-report-statistics.dto';
-import { FullReportStatisticsQueryDto } from './dto/full-report-statistics-query.dto';
+import { ReportCategoryAnalyticsDto } from './dto/report-category-statistics.dto';
+import { ReportCategoryAnalyticsQueryDto } from './dto/report-category-statistics-query.dto';
 
 @Controller('admin')
 @ApiTags('admin')
@@ -164,19 +164,32 @@ export class AdminController {
     return await this.adminService.createDump(createDumpDto);
   }
 
-  @Get('/statistics')
   @ApiOkResponse({
-    description: 'Report statistics have been successfully fetched',
-    type: FullReportStatisticsDto,
+    description:
+      'Category-sorted report analytics have been successfully fetched. ',
+    type: ReportCategoryAnalyticsDto,
   })
-  getFullStatistics(
-    @Query() query: FullReportStatisticsQueryDto,
-  ): Promise<FullReportStatisticsDto> {
-    return this.adminService.getFullReportStatistics(
+  @ApiQuery({
+    name: 'dateFrom',
+    required: false,
+    description: 'Start date, ex.: 2024-01-01',
+  })
+  @ApiQuery({
+    name: 'dateTo',
+    required: false,
+    description: 'End date, ex.: 2024-12-31',
+  })
+  @ApiQuery({ name: 'category', enum: ReportCategory, required: false })
+  @ApiQuery({ name: 'status', required: false })
+  @Get('/statistics/category')
+  getReportCategoryAnalytics(
+    @Query() query: ReportCategoryAnalyticsQueryDto,
+  ): Promise<ReportCategoryAnalyticsDto> {
+    return this.adminService.getReportCategoryAnalytics(
       query.dateFrom,
       query.dateTo,
+      query.category,
+      query.status,
     );
   }
-
-
 }

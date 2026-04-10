@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -16,6 +18,8 @@
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "include": ["src/**/*.ts", "src/**/*.json"],
+    "exclude": ["node_modules"]
   }
 }
