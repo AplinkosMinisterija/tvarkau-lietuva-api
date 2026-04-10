@@ -102,6 +102,7 @@ export class ReportRepository {
       reportLong: createReport.longitude,
       reportLat: createReport.latitude,
       email: createReport.email,
+      phoneNumber: createReport.phoneNumber,
       status: 'gautas',
       reportDate: Date.now(),
       isVisible: false,

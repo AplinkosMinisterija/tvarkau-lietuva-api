@@ -81,6 +81,9 @@ export class Report {
   })
   @Type(() => StatusRecords)
   statusRecords: StatusRecords[];
+
+  @Prop({ type: String, required: false })
+  phoneNumber: string;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);
