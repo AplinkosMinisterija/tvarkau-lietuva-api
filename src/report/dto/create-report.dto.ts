@@ -33,5 +33,5 @@ export class CreateReportDto {
   images: any[];
 
   @IsPhoneNumber()
-  phoneNumber: string;
+  phoneNumber?: string;
 }
