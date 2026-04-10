@@ -77,6 +77,55 @@ export class ReportRepository {
       .exec();
   }
 
+  getFullStatisticsCounts(dateFrom?: Date, dateTo?: Date): Promise<any[]> {
+    const query: Record<string, unknown> = {};
+
+    if (dateFrom || dateTo) {
+      const dateFilter: Record<string, Date> = {};
+      if (dateFrom) dateFilter.$gte = dateFrom;
+      if (dateTo) dateFilter.$lte = dateTo;
+      query.reportDate = dateFilter;
+    }
+
+    return this.reportModel
+      .aggregate([
+        { $match: query },
+        {
+          $facet: {
+            byStatus: [{ $group: { _id: '$status', count: { $sum: 1 } } }],
+            total: [{ $count: 'count' }],
+            deleted: [{ $match: { isDeleted: true } }, { $count: 'count' }],
+            notVisible: [{ $match: { isVisible: false } }, { $count: 'count' }],
+            transferred: [
+              { $match: { isTransferred: true } },
+              { $count: 'count' },
+            ],
+          },
+        },
+      ])
+      .exec();
+  }
+
+  async getAnalyticsReports(
+    dateFrom?: Date,
+    dateTo?: Date,
+    category?: ReportCategory,
+    status?: string,
+  ): Promise<any[]> {
+    const query: any = { isDeleted: false };
+
+    if (category) query.type = { $eq: category };
+    if (status) query.status = { $eq: status };
+
+    if (dateFrom || dateTo) {
+      query.reportDate = {};
+      if (dateFrom) query.reportDate.$gte = dateFrom;
+      if (dateTo) query.reportDate.$lte = dateTo;
+    }
+
+    return this.reportModel.find(query).sort({ reportDate: -1 }).lean().exec();
+  }
+
   async createReport(
     createReport: CreateReportDto,
     images: Array<Express.Multer.File>,
@@ -87,7 +136,7 @@ export class ReportRepository {
     }
     const reports = await this.reportModel.find().exec();
     const reportCount = reports.length;
-    if(reports != null && createReport.automaticEmailsEnabled != false) {
+    if (reports != null && createReport.automaticEmailsEnabled != false) {
       await this.postmarkService.sendReceivedReportEmail(
         createReport.email,
         this.postmarkService.generateReportUrl(reportCount + 1, false),
@@ -161,8 +210,13 @@ export class ReportRepository {
       if (updateReport.name != report.name) {
         historyEntry.edits.push(new HistoryEditsDto('name', updateReport.name));
       }
-      if (updateReport.category != report.type && updateReport.category != null) {
-        historyEntry.edits.push(new HistoryEditsDto('category', updateReport.category));
+      if (
+        updateReport.category != report.type &&
+        updateReport.category != null
+      ) {
+        historyEntry.edits.push(
+          new HistoryEditsDto('category', updateReport.category),
+        );
       }
       if (updateReport.longitude != report.reportLong) {
         historyEntry.edits.push(
@@ -202,7 +256,7 @@ export class ReportRepository {
         );
       }
 
-      if(updateReport.category == 'misc'){
+      if (updateReport.category == 'misc') {
         await this.reportModel.updateOne(
           {
             refId: { $eq: updateReport.refId },
@@ -211,7 +265,7 @@ export class ReportRepository {
             $set: {
               emailFeedbackStage: 0,
               automaticEmailsEnabled: false,
-            }
+            },
           },
         );
       }
@@ -226,8 +280,18 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
-          await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId, false), this.postmarkService.generateReportUrl(updateReport.refId, true));
+        if (
+          updateReport.status == 'tiriamas' &&
+          report.emailFeedbackStage < 2 &&
+          report.automaticEmailsEnabled &&
+          updateReport.category != 'misc' &&
+          report.type != 'misc'
+        ) {
+          await this.postmarkService.sendInInvestigationReportEmail(
+            report.email,
+            this.postmarkService.generateReportUrl(updateReport.refId, false),
+            this.postmarkService.generateReportUrl(updateReport.refId, true),
+          );
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -241,14 +305,25 @@ export class ReportRepository {
               },
               $set: {
                 emailFeedbackStage: 2,
-              }
+              },
             },
           );
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
-          await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId,false),this.postmarkService.generateReportUrl(updateReport.refId,true));
+        } else if (
+          (updateReport.status == 'išspręsta' ||
+            updateReport.status == 'nepasitvirtino') &&
+          report.emailFeedbackStage < 3 &&
+          report.automaticEmailsEnabled &&
+          updateReport.category != 'misc' &&
+          report.type != 'misc'
+        ) {
+          await this.postmarkService.sendInvestigatedReportEmail(
+            report.email,
+            this.postmarkService.generateReportUrl(updateReport.refId, false),
+            this.postmarkService.generateReportUrl(updateReport.refId, true),
+          );
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -262,13 +337,13 @@ export class ReportRepository {
               },
               $set: {
                 emailFeedbackStage: 3,
-              }
+              },
             },
           );
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '3'),
           );
-        }else {
+        } else {
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -301,7 +376,6 @@ export class ReportRepository {
         );
       }
     }
-
 
     let updatedReport = null;
     if (report != null) {
@@ -386,7 +460,7 @@ export class ReportRepository {
           },
           {
             returnNewDocument: true,
-          }
+          },
         )
         .exec();
     }
