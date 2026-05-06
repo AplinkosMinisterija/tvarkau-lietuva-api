@@ -4,8 +4,8 @@ import {
   IsEnum,
   IsLatitude,
   IsLongitude,
-  IsNotEmpty,
-} from 'class-validator';
+  IsNotEmpty, IsPhoneNumber
+} from "class-validator";
 import { ReportCategory } from '../../common/dto/report-category';
 import { ToBoolean } from 'src/common/transform/boolean.transform';
 
@@ -31,4 +31,7 @@ export class CreateReportDto {
 
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   images: any[];
+
+  @IsPhoneNumber()
+  phoneNumber?: string;
 }

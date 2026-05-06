@@ -68,6 +68,9 @@ export class FullReportDto {
   @ApiProperty({ format: 'double' })
   emailFeedbackStage: number;
 
+  @ApiProperty()
+  phoneNumber: string;
+
   constructor(
     _id: string,
     name: string,
@@ -89,6 +92,7 @@ export class FullReportDto {
     historyData: HistoryDataDto[],
     statusRecords: StatusRecordsDto[],
     emailFeedbackStage: number,
+    phoneNumber: string,
   ) {
     this._id = _id;
     this.name = name;
@@ -110,5 +114,6 @@ export class FullReportDto {
     this.historyData = historyData;
     this.statusRecords = statusRecords;
     this.emailFeedbackStage = emailFeedbackStage;
+    this.phoneNumber = phoneNumber;
   }
 }

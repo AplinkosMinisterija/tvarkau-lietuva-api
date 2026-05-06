@@ -137,6 +137,7 @@ export class AdminService {
       report.historyData.map(AdminService.docToHistoryData),
       report.statusRecords.map(AdminService.docToStatusRecords),
       report.emailFeedbackStage,
+      report.phoneNumber,
     );
   }
 
