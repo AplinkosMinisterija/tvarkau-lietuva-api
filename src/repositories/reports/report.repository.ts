@@ -227,7 +227,7 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
+        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc') && updateReport.isVisible){
           await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId, false), this.postmarkService.generateReportUrl(updateReport.refId, true));
           await this.reportModel.updateOne(
             {
@@ -248,7 +248,7 @@ export class ReportRepository {
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc')){
+        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc') && updateReport.isVisible){
           await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId,false),this.postmarkService.generateReportUrl(updateReport.refId,true));
           await this.reportModel.updateOne(
             {
