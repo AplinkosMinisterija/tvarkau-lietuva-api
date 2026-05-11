@@ -68,8 +68,8 @@ export class FullReportDto {
   @ApiProperty({ format: 'double' })
   emailFeedbackStage: number;
 
-  @ApiProperty()
-  phoneNumber: string;
+  @ApiProperty({ nullable: true })
+  phoneNumber?: string;
 
   constructor(
     _id: string,
