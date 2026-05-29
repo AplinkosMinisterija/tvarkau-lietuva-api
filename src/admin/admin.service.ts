@@ -79,6 +79,7 @@ export class AdminService {
 
   async transferReport(
     transferReportDto: TransferReportDto,
+    editorEmail: string,
   ): Promise<FullReportDto | null> {
     const response: AxiosResponse | null =
       await this.sendTransferRequest(transferReportDto);
@@ -94,7 +95,9 @@ export class AdminService {
         transferReportDto.refId,
         inspection,
         inspectionId,
-        transferReportDto.email,
+        editorEmail,
+        transferReportDto.email ?? null,
+        transferReportDto.severityCategory,
       );
     if (!report) return null;
 
@@ -138,6 +141,7 @@ export class AdminService {
       report.statusRecords.map(AdminService.docToStatusRecords),
       report.emailFeedbackStage,
       report.phoneNumber,
+      report.severityCategory,
     );
   }
 
@@ -178,7 +182,8 @@ export class AdminService {
       Ilguma: transferReportDto.longitude.toString(),
       Statusas: transferReportDto.status,
       'Data ir laikas': transferReportDto.reportDate.toString(),
-      'Vykdytojo e-mail': transferReportDto.email,
+      'Vykdytojo e-mail': transferReportDto.email ?? null,
+      Kategorija: transferReportDto.severityCategory,
     });
 
     const config = {

@@ -71,6 +71,9 @@ export class FullReportDto {
   @ApiProperty({ nullable: true })
   phoneNumber?: string;
 
+  @ApiProperty({ nullable: true })
+  severityCategory?: string;
+
   constructor(
     _id: string,
     name: string,
@@ -93,6 +96,7 @@ export class FullReportDto {
     statusRecords: StatusRecordsDto[],
     emailFeedbackStage: number,
     phoneNumber: string,
+    severityCategory: string,
   ) {
     this._id = _id;
     this.name = name;
@@ -115,5 +119,6 @@ export class FullReportDto {
     this.statusRecords = statusRecords;
     this.emailFeedbackStage = emailFeedbackStage;
     this.phoneNumber = phoneNumber;
+    this.severityCategory = severityCategory;
   }
 }

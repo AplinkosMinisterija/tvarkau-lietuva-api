@@ -19,8 +19,11 @@ export class TransferReportDto {
   @ApiProperty()
   reportDate: Date;
 
+  @ApiProperty({ nullable: true })
+  email?: string;
+
   @ApiProperty()
-  email: string;
+  severityCategory: string;
 
   constructor(
     name: string,
@@ -30,6 +33,7 @@ export class TransferReportDto {
     status: string,
     reportDate: Date,
     email: string,
+    severityCategory: string,
   ) {
     this.name = name;
     this.refId = refId;
@@ -38,5 +42,6 @@ export class TransferReportDto {
     this.status = status;
     this.reportDate = reportDate;
     this.email = email;
+    this.severityCategory = severityCategory;
   }
 }

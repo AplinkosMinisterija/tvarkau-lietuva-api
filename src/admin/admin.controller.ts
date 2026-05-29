@@ -121,10 +121,16 @@ export class AdminController {
   })
   @Post('/reports/transfer')
   async transferReport(
+    @Req() request: Request,
     @Body() transferReportDto: TransferReportDto,
   ): Promise<FullReportDto> {
-    const transferReport =
-      await this.adminService.transferReport(transferReportDto);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const editorEmail = request.user.email;
+    const transferReport = await this.adminService.transferReport(
+      transferReportDto,
+      editorEmail,
+    );
     if (!transferReport)
       throw new InternalServerErrorException('Report transfer unsuccessful');
     return transferReport;

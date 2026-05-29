@@ -87,7 +87,7 @@ export class ReportRepository {
     }
     const reports = await this.reportModel.find().exec();
     const reportCount = reports.length;
-    if(reports != null && createReport.automaticEmailsEnabled != false) {
+    if (reports != null && createReport.automaticEmailsEnabled != false) {
       await this.postmarkService.sendReceivedReportEmail(
         createReport.email,
         this.postmarkService.generateReportUrl(reportCount + 1, false),
@@ -162,8 +162,13 @@ export class ReportRepository {
       if (updateReport.name != report.name) {
         historyEntry.edits.push(new HistoryEditsDto('name', updateReport.name));
       }
-      if (updateReport.category != report.type && updateReport.category != null) {
-        historyEntry.edits.push(new HistoryEditsDto('category', updateReport.category));
+      if (
+        updateReport.category != report.type &&
+        updateReport.category != null
+      ) {
+        historyEntry.edits.push(
+          new HistoryEditsDto('category', updateReport.category),
+        );
       }
       if (updateReport.longitude != report.reportLong) {
         historyEntry.edits.push(
@@ -203,7 +208,7 @@ export class ReportRepository {
         );
       }
 
-      if(updateReport.category == 'misc'){
+      if (updateReport.category == 'misc') {
         await this.reportModel.updateOne(
           {
             refId: { $eq: updateReport.refId },
@@ -212,7 +217,7 @@ export class ReportRepository {
             $set: {
               emailFeedbackStage: 0,
               automaticEmailsEnabled: false,
-            }
+            },
           },
         );
       }
@@ -227,8 +232,19 @@ export class ReportRepository {
           }
         }
 
-        if(updateReport.status == 'tiriamas' && report.emailFeedbackStage < 2 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc') && updateReport.isVisible){
-          await this.postmarkService.sendInInvestigationReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId, false), this.postmarkService.generateReportUrl(updateReport.refId, true));
+        if (
+          updateReport.status == 'tiriamas' &&
+          report.emailFeedbackStage < 2 &&
+          report.automaticEmailsEnabled &&
+          updateReport.category != 'misc' &&
+          report.type != 'misc' &&
+          updateReport.isVisible
+        ) {
+          await this.postmarkService.sendInInvestigationReportEmail(
+            report.email,
+            this.postmarkService.generateReportUrl(updateReport.refId, false),
+            this.postmarkService.generateReportUrl(updateReport.refId, true),
+          );
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -242,14 +258,26 @@ export class ReportRepository {
               },
               $set: {
                 emailFeedbackStage: 2,
-              }
+              },
             },
           );
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '2'),
           );
-        }else if((updateReport.status == 'išspręsta' || updateReport.status == 'nepasitvirtino') && report.emailFeedbackStage < 3 && report.automaticEmailsEnabled && (updateReport.category != 'misc' && report.type != 'misc') && updateReport.isVisible){
-          await this.postmarkService.sendInvestigatedReportEmail(report.email, this.postmarkService.generateReportUrl(updateReport.refId,false),this.postmarkService.generateReportUrl(updateReport.refId,true));
+        } else if (
+          (updateReport.status == 'išspręsta' ||
+            updateReport.status == 'nepasitvirtino') &&
+          report.emailFeedbackStage < 3 &&
+          report.automaticEmailsEnabled &&
+          updateReport.category != 'misc' &&
+          report.type != 'misc' &&
+          updateReport.isVisible
+        ) {
+          await this.postmarkService.sendInvestigatedReportEmail(
+            report.email,
+            this.postmarkService.generateReportUrl(updateReport.refId, false),
+            this.postmarkService.generateReportUrl(updateReport.refId, true),
+          );
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -263,13 +291,13 @@ export class ReportRepository {
               },
               $set: {
                 emailFeedbackStage: 3,
-              }
+              },
             },
           );
           historyEntry.edits.push(
             new HistoryEditsDto('emailFeedbackStage', '3'),
           );
-        }else {
+        } else {
           await this.reportModel.updateOne(
             {
               refId: { $eq: updateReport.refId },
@@ -302,7 +330,6 @@ export class ReportRepository {
         );
       }
     }
-
 
     let updatedReport = null;
     if (report != null) {
@@ -340,6 +367,8 @@ export class ReportRepository {
     inspection: string,
     inspectionId: string,
     editorEmail: string,
+    recipientEmail: string | null,
+    severityCategory: string,
   ): Promise<Report | null> {
     const report = await this.reportModel
       .findOne({ refId: { $eq: refId } })
@@ -352,11 +381,19 @@ export class ReportRepository {
         edits: [],
       };
 
+      historyEntry.edits.push(
+        new HistoryEditsDto('aadis', recipientEmail ?? '-'),
+      );
       historyEntry.edits.push(new HistoryEditsDto('inspection', inspection));
       historyEntry.edits.push(
         new HistoryEditsDto('inspectionId', inspectionId),
       );
       historyEntry.edits.push(new HistoryEditsDto('isTransferred', 'true'));
+      if (report.severityCategory != severityCategory) {
+        historyEntry.edits.push(
+          new HistoryEditsDto('severityCategory', severityCategory),
+        );
+      }
       if (historyEntry.edits.length != 0) {
         await this.reportModel.findOneAndUpdate(
           {
@@ -383,11 +420,12 @@ export class ReportRepository {
               inspection: inspection,
               inspectionId: inspectionId,
               isTransferred: true,
+              severityCategory: severityCategory,
             },
           },
           {
             returnNewDocument: true,
-          }
+          },
         )
         .exec();
     }
