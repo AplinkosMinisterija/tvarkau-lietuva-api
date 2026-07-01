@@ -90,18 +90,21 @@ export class AdminService {
     const inspection = response.data[Object.keys(response.data)[0]];
     const inspectionId = response.data[Object.keys(response.data)[1]];
 
-    const report: Report | null =
-      await this.reportRepository.updateTransferReport(
-        transferReportDto.refId,
-        inspection,
-        inspectionId,
-        editorEmail,
-        transferReportDto.email ?? null,
-        transferReportDto.severityCategory,
+    await this.reportRepository.updateTransferReport(
+      transferReportDto.refId,
+      inspection,
+      inspectionId,
+      editorEmail,
+      transferReportDto.email ?? null,
+      transferReportDto.severityCategory,
+    );
+    const updatedReport: Report | null =
+      await this.reportRepository.getReportById(
+        parseInt(transferReportDto.refId),
       );
-    if (!report) return null;
+    if (!updatedReport) return null;
 
-    return AdminService.docToFullReport(report);
+    return AdminService.docToFullReport(updatedReport);
   }
 
   private static docToFullDump(dump: Dump): FullDumpDto {
