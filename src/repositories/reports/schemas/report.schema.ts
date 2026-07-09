@@ -84,6 +84,9 @@ export class Report {
 
   @Prop({ type: String, required: false })
   phoneNumber: string;
+
+  @Prop({ type: String, required: false })
+  severityCategory: string;
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report);

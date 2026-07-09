@@ -32,6 +32,6 @@ export class CreateReportDto {
   @ApiProperty({ type: 'array', items: { type: 'string', format: 'binary' } })
   images: any[];
 
-  @IsPhoneNumber()
+  @IsPhoneNumber('LT')
   phoneNumber?: string;
 }

@@ -79,6 +79,7 @@ export class AdminService {
 
   async transferReport(
     transferReportDto: TransferReportDto,
+    editorEmail: string,
   ): Promise<FullReportDto | null> {
     const response: AxiosResponse | null =
       await this.sendTransferRequest(transferReportDto);
@@ -89,16 +90,21 @@ export class AdminService {
     const inspection = response.data[Object.keys(response.data)[0]];
     const inspectionId = response.data[Object.keys(response.data)[1]];
 
-    const report: Report | null =
-      await this.reportRepository.updateTransferReport(
-        transferReportDto.refId,
-        inspection,
-        inspectionId,
-        transferReportDto.email,
+    await this.reportRepository.updateTransferReport(
+      transferReportDto.refId,
+      inspection,
+      inspectionId,
+      editorEmail,
+      transferReportDto.email ?? null,
+      transferReportDto.severityCategory,
+    );
+    const updatedReport: Report | null =
+      await this.reportRepository.getReportById(
+        parseInt(transferReportDto.refId),
       );
-    if (!report) return null;
+    if (!updatedReport) return null;
 
-    return AdminService.docToFullReport(report);
+    return AdminService.docToFullReport(updatedReport);
   }
 
   private static docToFullDump(dump: Dump): FullDumpDto {
@@ -138,6 +144,7 @@ export class AdminService {
       report.statusRecords.map(AdminService.docToStatusRecords),
       report.emailFeedbackStage,
       report.phoneNumber,
+      report.severityCategory,
     );
   }
 
@@ -178,7 +185,8 @@ export class AdminService {
       Ilguma: transferReportDto.longitude.toString(),
       Statusas: transferReportDto.status,
       'Data ir laikas': transferReportDto.reportDate.toString(),
-      'Vykdytojo e-mail': transferReportDto.email,
+      'Vykdytojo e-mail': transferReportDto.email ?? null,
+      Kategorija: transferReportDto.severityCategory,
     });
 
     const config = {
