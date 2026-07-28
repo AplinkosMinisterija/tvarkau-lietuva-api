@@ -39,7 +39,7 @@ export class PostmarkService {
         links: links,
       },
     };
-    const message = this.client.sendEmailWithTemplate(templatedMessage);
+    // DEV MODEconst message = this.client.sendEmailWithTemplate(templatedMessage);
     return 'Successfully sent';
   }
 
@@ -57,7 +57,7 @@ export class PostmarkService {
         id: id,
       },
     };
-    const message = this.client.sendEmailWithTemplate(templatedMessage);
+    // DEV MODEconst message = this.client.sendEmailWithTemplate(templatedMessage);
     return 'Successfully sent';
   }
 
@@ -77,7 +77,7 @@ export class PostmarkService {
         id: id,
       },
     };
-    const message = this.client.sendEmailWithTemplate(templatedMessage);
+    // DEV MODEconst message = this.client.sendEmailWithTemplate(templatedMessage);
     return 'Successfully sent';
   }
 
@@ -97,7 +97,7 @@ export class PostmarkService {
         id: id,
       },
     };
-    const message = this.client.sendEmailWithTemplate(templatedMessage);
+    // DEV MODEconst message = this.client.sendEmailWithTemplate(templatedMessage);
     return 'Successfully sent';
   }
 
