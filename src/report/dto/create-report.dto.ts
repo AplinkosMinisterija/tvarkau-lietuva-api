@@ -1,11 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
   IsLatitude,
   IsLongitude,
-  IsNotEmpty, IsPhoneNumber
-} from "class-validator";
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+} from 'class-validator';
 import { ReportCategory } from '../../common/dto/report-category';
 import { ToBoolean } from 'src/common/transform/boolean.transform';
 
@@ -33,5 +35,7 @@ export class CreateReportDto {
   images: any[];
 
   @IsPhoneNumber('LT')
+  @ApiPropertyOptional()
+  @IsOptional()
   phoneNumber?: string;
 }
