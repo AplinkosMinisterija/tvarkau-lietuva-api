@@ -4,6 +4,7 @@ import { ReportRepository } from '../repositories/reports/report.repository';
 import { Report, StatusRecords } from '../repositories/reports/schemas';
 import { ReportStatisticsDto } from './dto/report-statistics.dto';
 import { ReportCategory } from '../common/dto/report-category';
+import { assertReportTextWithinLimit } from '../common/report-text';
 
 @Injectable()
 export class ReportService {
@@ -20,6 +21,7 @@ export class ReportService {
     createReport: CreateReportDto,
     images: Array<Express.Multer.File>,
   ): Promise<PublicReportDto> {
+    assertReportTextWithinLimit(createReport.name);
     const report = await this.reportRepository.createReport(
       createReport,
       images,
