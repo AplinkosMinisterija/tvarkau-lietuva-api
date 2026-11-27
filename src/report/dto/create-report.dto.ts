@@ -10,9 +10,18 @@ import {
 } from 'class-validator';
 import { ReportCategory } from '../../common/dto/report-category';
 import { ToBoolean } from 'src/common/transform/boolean.transform';
+import {
+  IsReportTextWithinLimit,
+  REPORT_TEXT_MAX_LENGTH,
+} from '../../common/report-text';
 
 export class CreateReportDto {
+  @ApiProperty({
+    maxLength: REPORT_TEXT_MAX_LENGTH,
+    description: 'Report text, up to 4000 UTF-16 code units including spaces.',
+  })
   @IsNotEmpty()
+  @IsReportTextWithinLimit()
   name: string;
 
   @IsLongitude()

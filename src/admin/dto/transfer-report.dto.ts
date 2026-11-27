@@ -1,10 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsReportTextWithinLimit,
+  REPORT_TEXT_MAX_LENGTH,
+} from '../../common/report-text';
 
 export class TransferReportDto {
   @ApiProperty()
   refId: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    maxLength: REPORT_TEXT_MAX_LENGTH,
+    description: 'Report text, up to 4000 UTF-16 code units including spaces.',
+  })
+  @IsReportTextWithinLimit()
   name: string;
 
   @ApiProperty({ format: 'double' })

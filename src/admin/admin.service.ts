@@ -16,6 +16,10 @@ import { UpdateReportDto } from './dto';
 import { Dump } from '../repositories/dumps/schemas';
 import { ReportCategory } from '../common/dto/report-category';
 import axios, { AxiosResponse } from 'axios';
+import {
+  assertReportTextWithinLimit,
+  isReportTextWithinLimit,
+} from '../common/report-text';
 
 @Injectable()
 export class AdminService {
@@ -52,6 +56,16 @@ export class AdminService {
     images: Array<Express.Multer.File>,
     editorEmail: string,
   ): Promise<FullReportDto | null> {
+    if (!isReportTextWithinLimit(updateReport.name)) {
+      const original = await this.reportRepository.getReportById(
+        parseInt(updateReport.refId),
+      );
+      if (!original) return null;
+      // Let other fields of a legacy report be edited without losing its text.
+      if (updateReport.name !== original.name) {
+        assertReportTextWithinLimit(updateReport.name);
+      }
+    }
     const report: Report | null = await this.reportRepository.updateReport(
       updateReport,
       images,
@@ -81,6 +95,7 @@ export class AdminService {
     transferReportDto: TransferReportDto,
     editorEmail: string,
   ): Promise<FullReportDto | null> {
+    assertReportTextWithinLimit(transferReportDto.name);
     const response: AxiosResponse | null =
       await this.sendTransferRequest(transferReportDto);
     if (response == null) {
